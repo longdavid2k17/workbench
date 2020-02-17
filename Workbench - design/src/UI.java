@@ -8,8 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.util.Date;
 
 /*
@@ -20,9 +19,9 @@ proponowane opcje:
 - ulepszona gumka - nie jako kursor ale normalny kwadracik
 - łącznie przez zewnętrzne IP
 - precyzyjne przesyłanie plików , wraz z przesyłaniem formatu i rozmiaru pliku
-- mute/unmute mikrofonu przy swojej ikonie na userPanel
-- opcja zapisu utworzonej tablicy do pliku oraz automatyczne przesłanie go do pozostałych użytkowników
-- robienie zrzutu ekranu (podobnie jak opcja wyżej)
+- mute/unmute mikrofonu przy swojej ikonie na userPanel (13)
+- opcja zapisu utworzonej tablicy do pliku oraz automatyczne przesłanie go do pozostałych użytkowników (12)
+- robienie zrzutu ekranu (podobnie jak opcja wyżej) (11)
 
 OPERUJEMY NIE NA BAZIE DANYCH TYLKO NA SOCKETACH!!!
 
@@ -37,18 +36,26 @@ public class UI extends JFrame
     JLabel addressLabel, authCodeLabel;
     JScrollPane scrollChatPanel, scrollUserPanel;
     JButton clearBtn, textButton, colorButton, rubberButton, sendInviteButton;
+    JLabel newUser, newUser1, newUser2,newUser3, newUser4,newUser5, newUser6,newUser7, newUser8,newUser9, newUser10,newUser11, newUser12,newUser13, newUser14;
     DrawArea drawArea;
     JFileChooser chooser;
     String nickname;
+    private int port = 9876;
     private TargetDataLine mic;
     public boolean isMicAvalibleForUser = false;
     String ipAddress, authCode;
-    JLabel newUser, newUser1, newUser2,newUser3, newUser4,newUser5, newUser6,newUser7, newUser8,newUser9, newUser10,newUser11, newUser12,newUser13, newUser14;
+
     Date date = new Date();
+    private static final int MAX_LEN = 1000;
+    MulticastSocket socket = null;
+    static String mulitcastHost = "239.0.0.0";
+    private boolean isAdmin;
 
     Icon micIcon = new ImageIcon("src/res/mic-resized.png");
     Icon noMicIcon = new ImageIcon("src/res/no-mic-resized.gif");
+
     FileSender fileSender;
+    Chat chatListiner;
 
 
 
@@ -72,8 +79,7 @@ public class UI extends JFrame
         this.authCode = authCode;
     }
 
-    UI(String ipAddress, String authCode, String nickname, int choose)
-    {
+    UI(String ipAddress, String authCode, String nickname, int choose) throws IOException {
 
         /*
         AudioFormat af = SoundPacket.defaultFormat;
@@ -86,6 +92,8 @@ public class UI extends JFrame
         setAuthCode(authCode);
         this.nickname = nickname;
         clientUI();
+        chatListiner = new Chat();
+        chatListiner.setServerRunning(true);
 
         fileSender = new FileSender();
 
@@ -98,11 +106,12 @@ public class UI extends JFrame
             newUser = new JLabel("Użytkownik: " + nickname + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", noMicIcon, JLabel.LEFT);
         }
         usersPanel.add(newUser);
-        //addStaticUsers();
+        addStaticUsers();
 
        if(choose==1)
        {
            System.out.println("CLIENT");
+           isAdmin=false;
        }
        else if(choose==2)
        {
@@ -110,10 +119,60 @@ public class UI extends JFrame
            sendInviteButton.setVisible(true);
            authCodeLabel.setVisible(true);
            addressLabel.setVisible(true);
+           isAdmin=true;
        }
        else
            System.out.println("ERROR");
+           isAdmin=false;
+
+        MulticastSocket socket = null;
+        try
+        {
+            socket = new MulticastSocket(port);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        socket.setTimeToLive(0);
+        //this on localhost only (For a subnet set it as 1)
+        InetAddress group = InetAddress.getByName(Chat.mulitcastHost);
+        socket.joinGroup(group);
+        Thread t = new Thread(new ReadThread(socket,group,port,chatPanel));
+        t.start();
     }
+
+    /*@Override
+    public void run()
+    {
+        try
+        {
+            socket = new MulticastSocket(socketId);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+            byte[] buffer = new byte[UI.MAX_LEN];
+            DatagramPacket datagram = new
+                    DatagramPacket(buffer,buffer.length,,9876);
+            String message;
+            try
+            {
+                socket.receive(datagram);
+                message = new
+                        String(buffer,0,datagram.getLength(),"UTF-8");
+                    System.out.println(message);
+                    JLabel mess = new JLabel(message);
+                chatPanel.add(mess);
+
+            }
+            catch(IOException e)
+            {
+                System.out.println("Socket closed!");
+            }
+    }*/
 
     void clientUI()
     {
@@ -127,7 +186,14 @@ public class UI extends JFrame
         mainFrame.getContentPane().setBackground(Color.LIGHT_GRAY);
         mainFrame.validate();
 
-        drawArea = new DrawArea();
+        if(isAdmin)
+        {
+            drawArea = new DrawArea(true);
+        }
+        else
+        {
+            drawArea = new DrawArea(false);
+        }
 
         clearBtn = new JButton("Wyczyść");
         clearBtn.addActionListener(actionListener);
@@ -183,9 +249,17 @@ public class UI extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                try
+                {
+                    chatListiner.sendMessage(nickname,mainFrame,messeageArea,chatPanel);
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }/*
                 if(!messeageArea.getText().isEmpty())
                 {
-/*                    BufferedImage image = null;
+*//*                    BufferedImage image = null;
                     try
                     {
                         image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
@@ -194,7 +268,7 @@ public class UI extends JFrame
                     catch (Exception e1)
                     {
                         e1.printStackTrace();
-                    }*/
+                    }*//*
 
                     String messeage = nickname+" : "+messeageArea.getText()+"\n";
                     System.out.println(messeage+messeage);
@@ -205,7 +279,7 @@ public class UI extends JFrame
                     messeageArea.setText("");
                     mainFrame.validate();
                     mainFrame.repaint();
-                }
+                }*/
             }
         });
 
@@ -525,5 +599,51 @@ public class UI extends JFrame
     public void setMicAvalible(boolean state)
     {
         isMicAvalibleForUser=state;
+    }
+}
+
+class ReadThread implements Runnable
+{
+    private MulticastSocket socket;
+    private InetAddress group;
+    private int port;
+    private static final int MAX_LEN = 1000;
+    JPanel panelPointer;
+    ReadThread(MulticastSocket socket,InetAddress group,int port, JPanel panelPointer)
+    {
+        this.socket = socket;
+        this.group = group;
+        this.port = port;
+        this.panelPointer = panelPointer;
+    }
+
+    @Override
+    public void run()
+    {
+        byte[] buffer = new byte[ReadThread.MAX_LEN];
+        DatagramPacket datagram = new
+                DatagramPacket(buffer, buffer.length, group, port);
+        String message;
+        while (true)
+        {
+            try
+            {
+                socket.receive(datagram);
+                message = new String(buffer, 0, datagram.getLength(), "UTF-8");
+                System.out.println("Odebrano wiadomość: " + message);
+                JLabel mess = new JLabel(message);
+                panelPointer.add(mess);
+                Thread.sleep(500);
+                panelPointer.repaint();
+            }
+            catch (IOException e)
+            {
+                System.out.println("Socket closed!");
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }

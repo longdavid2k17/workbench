@@ -126,7 +126,14 @@ public class TypeAction extends JFrame
                         {
                             if(!ipAdressArea.getText().equals("000.000.000.000"))
                             {
-                                new UI(ip, codeArea.getText(), nicknameArea.getText(), 1);
+                                try
+                                {
+                                    new UI(ip, codeArea.getText(), nicknameArea.getText(), 1);
+                                }
+                                catch (IOException e1)
+                                {
+                                    e1.printStackTrace();
+                                }
                                 typeActionFrame.dispose();
                             }
                             else
@@ -148,7 +155,14 @@ public class TypeAction extends JFrame
                     {
                         if(!ipAdressArea.getText().equals("000.000.000.000"))
                         {
-                            new UI(ipAdressArea.getText(), codeArea.getText(), "Administrator", 2);
+                            try
+                            {
+                                new UI(ipAdressArea.getText(), codeArea.getText(), "Administrator", 2);
+                            }
+                            catch (IOException e1)
+                            {
+                                e1.printStackTrace();
+                            }
                             typeActionFrame.dispose();
                         }
                         else

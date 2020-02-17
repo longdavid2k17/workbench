@@ -18,7 +18,8 @@ import javax.sound.sampled.TargetDataLine;
  *
  * @author dosse
  */
-public class MicThread extends Thread {
+public class MicThread extends Thread
+{
 
     public static double amplification = 1.0;
     private ObjectOutputStream toServer;
