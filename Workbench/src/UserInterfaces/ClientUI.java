@@ -22,9 +22,8 @@ public class ClientUI
     private JFrame mainFrame;
     private JPanel chatPanel, usersPanel;
     private JTextArea messeageArea;
-    private JButton settingsButton, sendButton, sendFileButton;
+    private JButton settingsButton, sendButton, sendFileButton, openToolsButton;
     private JScrollPane scrollChatPanel, scrollUserPanel;
-    private JButton clearBtn, textButton, colorButton, rubberButton;
     private DrawArea drawArea;
     private UITools uiTools;
     private Chat chatListiner;
@@ -56,6 +55,7 @@ public class ClientUI
         usersPanel.add(newUserLabel);
 
         MulticastSocket socket = null;
+
         try
         {
             socket = new MulticastSocket(port);
@@ -64,12 +64,14 @@ public class ClientUI
         {
             e.printStackTrace();
         }
+
         socket.setTimeToLive(0);
         InetAddress group = InetAddress.getByName(Chat.getMulitcastHost());
         socket.joinGroup(group);
         Thread t = new Thread(new ReadThread(socket,group,port,chatPanel));
         t.start();
     }
+
     void createUI()
     {
         mainFrame = new JFrame("Workbench");
@@ -82,30 +84,6 @@ public class ClientUI
         mainFrame.getContentPane().setBackground(new Color(222,240,252));
         mainFrame.validate();
 
-        clearBtn = new JButton("Wyczyść");
-        clearBtn.addActionListener(actionListener);
-        clearBtn.setBorder(new RoundedBorder(30));
-        clearBtn.setFocusPainted(false);
-        clearBtn.setOpaque(false);
-        clearBtn.setForeground(Color.BLACK);
-        clearBtn.setBackground(Color.white);
-
-        textButton = new JButton("T");
-        textButton.addActionListener(actionListener);
-        textButton.setBorder(new RoundedBorder(30));
-        textButton.setFocusPainted(false);
-        textButton.setOpaque(false);
-        textButton.setForeground(Color.BLACK);
-        textButton.setBackground(Color.white);
-
-        rubberButton = new JButton("Gumka");
-        rubberButton.addActionListener(actionListener);
-        rubberButton.setBorder(new RoundedBorder(30));
-        rubberButton.setFocusPainted(false);
-        rubberButton.setForeground(Color.BLACK);
-        rubberButton.setBackground(Color.white);
-        rubberButton.setOpaque(false);
-
         settingsButton = new JButton("Ustawienia");
         settingsButton.addActionListener(actionListener);
         settingsButton.setBorder(new RoundedBorder(30));
@@ -114,13 +92,17 @@ public class ClientUI
         settingsButton.setBackground(Color.white);
         settingsButton.setOpaque(false);
 
+        openToolsButton = new JButton("Narzędzia");
+        openToolsButton.addActionListener(actionListener);
+        openToolsButton.setBorder(new RoundedBorder(30));
+        openToolsButton.setFocusPainted(false);
+        openToolsButton.setForeground(Color.BLACK);
+        openToolsButton.setBackground(Color.white);
+        openToolsButton.setOpaque(false);
+        openToolsButton.setEnabled(false);
+
         drawArea = new DrawArea(true);
         drawArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-
-        colorButton = new JButton();
-        colorButton.setToolTipText("Zmień kolor czcionki");
-        colorButton.setBackground(Color.black);
-        colorButton.addActionListener(actionListener);
 
         chatPanel = new JPanel();
         chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));
@@ -166,17 +148,14 @@ public class ClientUI
         scrollUserPanel.setVisible(true);
         scrollUserPanel.setViewportView(usersPanel);
 
-        uiTools.resizeClientUI(chatPanel, usersPanel, drawArea, messeageArea, scrollUserPanel, scrollChatPanel, textButton, colorButton, clearBtn, rubberButton, settingsButton, sendButton, sendFileButton);
+        uiTools.resizeClientUI(chatPanel, usersPanel, drawArea, messeageArea, scrollUserPanel, scrollChatPanel, settingsButton, sendButton, sendFileButton,openToolsButton);
 
         mainFrame.add(sendButton);
+        mainFrame.add(openToolsButton);
         mainFrame.add(scrollUserPanel);
         mainFrame.add(sendFileButton);
         mainFrame.add(scrollChatPanel);
         mainFrame.add(messeageArea);
-        mainFrame.add(colorButton);
-        mainFrame.add(textButton);
-        mainFrame.add(clearBtn);
-        mainFrame.add(rubberButton);
         mainFrame.add(drawArea);
         mainFrame.add(settingsButton);
 
@@ -190,19 +169,7 @@ public class ClientUI
     {
         public void actionPerformed(ActionEvent e)
         {
-            if (e.getSource() == clearBtn)
-            {
-                drawArea.clear();
-            }
-            else if (e.getSource() == textButton)
-            {
-                drawArea.text();
-            }
-            else if (e.getSource() == rubberButton)
-            {
-                drawArea.rubber();
-            }
-            else if (e.getSource() == settingsButton)
+            if (e.getSource() == settingsButton)
             {
                 SettingsUI settings = new SettingsUI();
                 if (settings.getMicAvalibility())
@@ -213,12 +180,6 @@ public class ClientUI
             else if (e.getSource()==sendFileButton)
             {
                 fileTransfer.sendFile();
-            }
-
-            else if(e.getSource() == colorButton)
-            {
-                drawArea.setColor(mainFrame);
-                colorButton.setBackground(drawArea.getColor());
             }
             else if(e.getSource() == sendButton)
             {
@@ -231,6 +192,15 @@ public class ClientUI
                     e1.printStackTrace();
                 }
             }
+            else if(e.getSource() == openToolsButton)
+            {
+                ClientTools tools = new ClientTools(drawArea);
+            }
         }
     };
+
+    void setOpenToolsButtonActive()
+    {
+        this.openToolsButton.setEnabled(true);
+    }
 }

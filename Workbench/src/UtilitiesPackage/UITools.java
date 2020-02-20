@@ -156,9 +156,8 @@ public class UITools
         }
     }
 
-    public void resizeClientUI(JPanel chatPanel, JPanel usersPanel, DrawArea drawArea, JTextArea messeageArea, JScrollPane scrollUserPanel, JScrollPane scrollChatPanel, JButton textButton, JButton colorButton,
-                       JButton clearBtn, JButton rubberButton, JButton settingsButton, JButton sendButton,
-                       JButton sendFileButton)
+    public void resizeClientUI(JPanel chatPanel, JPanel usersPanel, DrawArea drawArea, JTextArea messeageArea, JScrollPane scrollUserPanel, JScrollPane scrollChatPanel, JButton settingsButton, JButton sendButton,
+                       JButton sendFileButton,JButton openToolsButton)
     {
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
@@ -166,11 +165,8 @@ public class UITools
 
         if(width==1366.0 && height==768.0)
         {
-            textButton.setBounds(20,620,100,30);
-            colorButton.setBounds(130,620,30,30);
-            clearBtn.setBounds(180,620,100,30);
-            rubberButton.setBounds(290,620,100,30);
-            settingsButton.setBounds(400,620,100,30);
+            settingsButton.setBounds(50,620,100,30);
+            openToolsButton.setBounds(160,620,100,30);
             sendFileButton.setBounds(1120,490,100,35);
             sendButton.setBounds(1000,490,100,35);
 
@@ -203,11 +199,8 @@ public class UITools
         }
         else if(width==1600.0 && height==900.0)
         {
-            textButton.setBounds(10,750,60,30);
-            colorButton.setBounds(90,750,30,30);
-            clearBtn.setBounds(140,750,60,30);
-            rubberButton.setBounds(220,750,60,30);
-            settingsButton.setBounds(300,750,60,30);
+            settingsButton.setBounds(50,750,60,30);
+            openToolsButton.setBounds(120,750,100,30);
 
             chatPanel.setPreferredSize(new Dimension(375, 460));
             chatPanel.setMinimumSize(new Dimension(370, 460));
@@ -223,11 +216,8 @@ public class UITools
         }
         else if(width==1920.0 && height==1080.0)
         {
-            textButton.setBounds(10,900,75,40);
-            colorButton.setBounds(100,900,40,40);
-            clearBtn.setBounds(180,900,75,40);
-            rubberButton.setBounds(270,900,75,40);
-            settingsButton.setBounds(355,900,75,40);
+            settingsButton.setBounds(50,900,75,40);
+            openToolsButton.setBounds(130,900,100,30);
 
             chatPanel.setPreferredSize(new Dimension(385, 550));
 
@@ -257,11 +247,8 @@ public class UITools
 
         else if(width==2560.0 && height==1080.0)
         {
-            textButton.setBounds(50,900,70,40);
-            colorButton.setBounds(135,900,40,40);
-            clearBtn.setBounds(190,900,120,40);
-            rubberButton.setBounds(320,900,120,40);
-            settingsButton.setBounds(450,900,150,40);
+            settingsButton.setBounds(50,900,150,40);
+            openToolsButton.setBounds(210,900,150,40);
             sendFileButton.setBounds(2020,700,160,50);
             sendButton.setBounds(1900,700,100,50);
 

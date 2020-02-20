@@ -6,20 +6,23 @@ import UtilitiesPackage.Utils;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 public class SettingsUI extends JFrame
 {
-    JFrame frame;
-    JLabel micLabel,volumeLabel, audioDevices;
-    JProgressBar micLevel;
-    JSlider micVolume;
-    JComboBox audioDevicesBox;
+    private JFrame frame;
+    private JLabel micLabel,volumeLabel, audioDevices;
+    private JProgressBar micLevel;
+    private JSlider micVolume;
+    private JComboBox audioDevicesBox;
     private TargetDataLine mic = null;
     private MicTester micTester;
     static boolean isMicAvalible=true;
+
+    Border border = BorderFactory.createLineBorder(Color.BLACK);
 
     private class MicTester extends Thread
     {
@@ -42,7 +45,7 @@ public class SettingsUI extends JFrame
             }
             catch (Exception e)
             {
-                JOptionPane.showMessageDialog(rootPane,"Nie podłączono mikrofonu!\nNaciśnij OK aby zamknąć program", "Nie podłączono mikrofonu!",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(rootPane,"Nie podłączono mikrofonu!\nCzat głosowy nie będzie dla Ciebie dostępny!", "Nie podłączono mikrofonu!",JOptionPane.ERROR_MESSAGE);
             }
             for (;;)
             {
@@ -83,14 +86,14 @@ public class SettingsUI extends JFrame
         micTester=new MicTester();
         micTester.start();
 
-        frame = new JFrame("Workbench - ustawienia");
+        frame = new JFrame("Ustawienia");
         frame.setSize(300,300);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
-        frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+        frame.getContentPane().setBackground(new Color(222,240,252));
         frame.validate();
 
         micLabel = new JLabel("Dźwięk");
@@ -99,11 +102,13 @@ public class SettingsUI extends JFrame
         frame.add(micLabel);
 
         micLevel = new JProgressBar();
-        micLevel.setBackground(Color.LIGHT_GRAY);
+        micLevel.setBackground(new Color(222,240,252));
         micLevel.setOrientation(SwingConstants.HORIZONTAL);
         micLevel.setValue(0);
         micLevel.setMinimum(0);
         micLevel.setMaximum(100);
+        micLevel.setForeground(Color.RED);
+        //micLevel.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         micLevel.setBounds(110,20,150,5);
         frame.add(micLevel);
 
@@ -114,8 +119,9 @@ public class SettingsUI extends JFrame
 
         micVolume = new JSlider(SwingConstants.HORIZONTAL, 50, 300, 50);
         micVolume.setVisible(true);
-        micVolume.setBackground(Color.LIGHT_GRAY);
+        micVolume.setBackground(new Color(222,240,252));
         micVolume.addChangeListener(e -> micVolStateChanged(e));
+        micVolume.setForeground(Color.RED);
         micVolume.setBounds(110,60,150,20);
         frame.add(micVolume);
 
@@ -134,6 +140,7 @@ public class SettingsUI extends JFrame
         audioDevicesBox.setBounds(110,100,160,30);
         audioDevicesBox.setSelectedIndex(0);
         audioDevicesBox.setVisible(true);
+        audioDevicesBox.setBackground(new Color(222,240,252));
         audioDevicesBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
