@@ -8,13 +8,10 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.*;
 import java.util.Date;
 
 import DrawArea.DrawArea;
 import Session.*;
-import UtilitiesPackage.Chat;
-import UtilitiesPackage.ReadThread;
 import UtilitiesPackage.UITools;
 
 
@@ -29,8 +26,6 @@ public class AdministratorUI
     private JButton clearBtn, textButton, colorButton, rubberButton, sendInviteButton;
     private DrawArea drawArea;
     private UITools uiTools;
-    private Chat chatListiner;
-    private Connection connection;
     private FileTransfer fileTransfer;
 
     private String nickname;
@@ -56,17 +51,10 @@ public class AdministratorUI
         this.nickname = nickname;
         this.port = port;
 
-        chatListiner = new Chat();
-        chatListiner.setServerRunning(true);
-
         uiTools = new UITools();
-        chatListiner = new Chat();
-        connection = new Connection();
         fileTransfer = new FileTransfer(mainFrame, chatPanel);
 
         createUI();
-
-
         /*if(isMicAvalibleForUser==true)
         {
             newUserLabel = new JLabel("Użytkownik: " + nickname + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", micIcon, JLabel.LEFT);
@@ -77,21 +65,6 @@ public class AdministratorUI
         }*/
         JLabel newUserLabel = new JLabel("Użytkownik: " + getNickname() + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", micIcon, JLabel.LEFT);
         usersPanel.add(newUserLabel);
-
-        MulticastSocket socket = null;
-        try
-        {
-            socket = new MulticastSocket(port);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        socket.setTimeToLive(0);
-        InetAddress group = InetAddress.getByName(Chat.getMulitcastHost());
-        socket.joinGroup(group);
-        Thread t = new Thread(new ReadThread(socket,group,port,chatPanel));
-        t.start();
     }
 
     void createUI()
@@ -263,7 +236,8 @@ public class AdministratorUI
             }
             else if (e.getSource() == sendInviteButton)
             {
-                String invite = "Adres serwera: " + connection.getIpAdress() + " | Kod dostępu do sesji: " + connection.getAuthCode();
+                //String invite = "Adres serwera: " + connection.getIpAdress() + " | Kod dostępu do sesji: " + connection.getAuthCode();
+                String invite = "Adres serwera: " + ipAdress + " | Kod dostępu do sesji: " + authCode;
                 StringSelection stringSelection = new StringSelection(invite);
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(stringSelection, null);
@@ -278,11 +252,19 @@ public class AdministratorUI
             {
                 try
                 {
-                    chatListiner.sendMessage(nickname, mainFrame, messeageArea, chatPanel);
+                    String messageString=nickname+" : "+messeageArea.getText();
+                    JLabel messageLabel = new JLabel(messageString);
+                    chatPanel.add(messageLabel);
+                    //serverConnection.sendMessage(messageString);
+                    chatPanel.repaint();
+                    System.out.println("TEST WIADOMOŚCI - "+messageString);
+
+                    messeageArea.setText("");
+
                 }
-                catch (IOException e1)
+                catch (Exception ex)
                 {
-                    e1.printStackTrace();
+                    System.out.println(ex.getMessage());
                 }
             }
         }

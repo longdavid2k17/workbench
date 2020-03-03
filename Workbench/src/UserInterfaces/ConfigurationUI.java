@@ -2,46 +2,37 @@ package UserInterfaces;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.InetAddress;
 import java.text.ParseException;
 import java.util.StringTokenizer;
 
 public class ConfigurationUI extends JFrame
 {
     JFrame typeActionFrame;
-    JLabel infoLabel, ipAdressLabel, codeAreaLabel, nicknameLabel, yourIPLbl;
+    JLabel infoLabel, ipAdressLabel, codeAreaLabel, nicknameLabel;
     JCheckBox adminCheckBox, clientCheckBox;
-    JTextArea codeArea, nicknameArea, yourIPAdressArea;
+    JTextArea codeArea, nicknameArea;
     JFormattedTextField ipAdressArea;
     JButton startButton;
     boolean isAdmin;
-    String ip;
+    String internalIp;
     Border border = BorderFactory.createLineBorder(Color.BLACK);
 
-    public ConfigurationUI() throws IOException, ParseException
+    public ConfigurationUI() throws IOException
     {
-        URL whatismyip = new URL("http://checkip.amazonaws.com");
-        BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
-
-        ip = in.readLine(); //you get the IP as a String
         createUI();
-        ipAdressArea.setText(ip);
+        InetAddress inet = InetAddress.getLocalHost();
+        internalIp = inet.getHostAddress();
     }
 
-    void createUI() throws ParseException
+    void createUI()
     {
-        MaskFormatter formatter = new MaskFormatter("###.###.###.###");
-        formatter.setPlaceholderCharacter('0');
-
         typeActionFrame = new JFrame("Skonfiguruj sesję");
-        typeActionFrame.setSize(300,450);
+        typeActionFrame.setSize(300,400);
         typeActionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         typeActionFrame.setResizable(false);
         typeActionFrame.setVisible(true);
@@ -61,10 +52,11 @@ public class ConfigurationUI extends JFrame
         ipAdressLabel.setBackground(Color.white);
         typeActionFrame.add(ipAdressLabel);
 
-        ipAdressArea = new JFormattedTextField(formatter);
+        ipAdressArea = new JFormattedTextField();
         ipAdressArea.setEditable(true);
         ipAdressArea.setInputVerifier(new IPTextFieldVerifier());
         ipAdressArea.setBackground(Color.white);
+        ipAdressArea.setText(internalIp);
         ipAdressArea.setBounds(140,100,120,40);
         ipAdressArea.setVisible(true);
         ipAdressArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
@@ -100,25 +92,10 @@ public class ConfigurationUI extends JFrame
         nicknameArea.setBackground(Color.white);
         typeActionFrame.add(nicknameArea);
 
-        yourIPLbl = new JLabel("Twój adres IP:");
-        yourIPLbl.setBounds(10,290,100,20);
-        yourIPLbl.setVisible(false);
-        yourIPLbl.setBackground(Color.white);
-        typeActionFrame.add(yourIPLbl);
-
-        yourIPAdressArea = new JTextArea();
-        yourIPAdressArea.setEditable(false);
-        yourIPAdressArea.setText(ip);
-        yourIPAdressArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        yourIPAdressArea.setBounds(140,280,120,40);
-        yourIPAdressArea.setVisible(false);
-        yourIPAdressArea.setBackground(Color.white);
-        typeActionFrame.add(yourIPAdressArea);
-
         startButton = new JButton("Uruchom");
         startButton.setVisible(true);
         startButton.setBackground(Color.white);
-        startButton.setBounds(75,350,150,40);
+        startButton.setBounds(75,290,150,40);
         startButton.setBorder(new RoundedBorder(30));
         startButton.setForeground(Color.BLACK);
         startButton.setFocusPainted(false);
@@ -148,8 +125,6 @@ public class ConfigurationUI extends JFrame
                     ipAdressArea.setEditable(true);
                     nicknameArea.setEditable(true);
                     startButton.setText("Połącz");
-                    yourIPLbl.setVisible(false);
-                    yourIPAdressArea.setVisible(false);
                     codeAreaLabel.setText("Kod dostępu");
                 }
                 else
@@ -174,10 +149,8 @@ public class ConfigurationUI extends JFrame
                     adminCheckBox.setEnabled(true);
                     clientCheckBox.setEnabled(false);
                     isAdmin=true;
-                    yourIPLbl.setVisible(true);
-                    yourIPAdressArea.setVisible(true);
-                    ipAdressArea.setEditable(true);
-                    ipAdressArea.setText("");
+                    ipAdressArea.setEditable(false);
+                    ipAdressArea.setText(internalIp);
                     nicknameArea.setText("Administrator");
                     nicknameArea.setEditable(false);
                     startButton.setText("Uruchom sesję");
@@ -207,7 +180,7 @@ public class ConfigurationUI extends JFrame
                                 //new UI(ip, codeArea.getText(), nicknameArea.getText(), 1);
                                 try
                                 {
-                                    ClientUI client = new ClientUI(nicknameArea.getText());
+                                    ClientUI client = new ClientUI(nicknameArea.getText(), ipAdressArea.getText());
                                     typeActionFrame.dispose();
                                 }
                                 catch (IOException e1)

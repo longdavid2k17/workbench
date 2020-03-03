@@ -17,9 +17,5 @@ public class WorkbenchStart
         {
             e.printStackTrace();
         }
-        catch (ParseException e)
-        {
-            e.printStackTrace();
-        }
     }
 }

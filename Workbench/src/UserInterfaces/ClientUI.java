@@ -1,10 +1,7 @@
 package UserInterfaces;
 
 import DrawArea.DrawArea;
-import Session.Connection;
 import Session.FileTransfer;
-import UtilitiesPackage.Chat;
-import UtilitiesPackage.ReadThread;
 import UtilitiesPackage.UITools;
 
 import javax.swing.*;
@@ -13,8 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
 import java.util.Date;
 
 public class ClientUI
@@ -26,8 +21,6 @@ public class ClientUI
     private JScrollPane scrollChatPanel, scrollUserPanel;
     private DrawArea drawArea;
     private UITools uiTools;
-    private Chat chatListiner;
-    private Connection connection;
     private FileTransfer fileTransfer;
 
     Date date = new Date();
@@ -36,40 +29,20 @@ public class ClientUI
     ImageIcon micIcon = new ImageIcon("src/Resources/Mic.png");
     ImageIcon noMicIcon = new ImageIcon("src/Resources/noMic.gif");
 
-    private String nickname;
+    private String nickname, ipAddress;
     private int port=9876;
 
-    ClientUI(String nickname) throws IOException
+    ClientUI(String nickname, String ipAddress) throws IOException
     {
         this.nickname = nickname;
-        chatListiner = new Chat();
-        chatListiner.setServerRunning(true);
+        this.ipAddress = ipAddress;
 
         uiTools = new UITools();
-        chatListiner = new Chat();
-        connection = new Connection();
         fileTransfer = new FileTransfer(mainFrame, chatPanel);
 
         createUI();
         JLabel newUserLabel = new JLabel("Użytkownik: " + nickname + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", noMicIcon, JLabel.LEFT);
         usersPanel.add(newUserLabel);
-
-        MulticastSocket socket = null;
-
-        try
-        {
-            socket = new MulticastSocket(port);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        socket.setTimeToLive(0);
-        InetAddress group = InetAddress.getByName(Chat.getMulitcastHost());
-        socket.joinGroup(group);
-        Thread t = new Thread(new ReadThread(socket,group,port,chatPanel));
-        t.start();
     }
 
     void createUI()
@@ -185,11 +158,17 @@ public class ClientUI
             {
                 try
                 {
-                    chatListiner.sendMessage(nickname, mainFrame, messeageArea, chatPanel);
+                    String messageString=nickname+" : "+messeageArea.getText();
+                    JLabel messageLabel = new JLabel(messageString);
+                    chatPanel.add(messageLabel);
+                    //clientConnection.sendMessage(messageString);
+                    chatPanel.repaint();
+                    System.out.println("TEST WIADOMOŚCI - "+messageString);
+                    messeageArea.setText("");
                 }
-                catch (IOException e1)
+                catch (Exception ex)
                 {
-                    e1.printStackTrace();
+                    System.out.println(ex.getMessage());
                 }
             }
             else if(e.getSource() == openToolsButton)
@@ -203,4 +182,5 @@ public class ClientUI
     {
         this.openToolsButton.setEnabled(true);
     }
+
 }
