@@ -92,9 +92,12 @@ public class ClientUI implements Observer
     private JTextArea messeageArea;
     private JButton settingsButton, sendButton, sendFileButton, openToolsButton,reciveFileButton;
     private JScrollPane scrollChatPanel, scrollUserPanel;
+    private JPanel drawAreaPanel;
+    private JScrollPane scrollDrawAreaPanel;
     private DrawArea drawArea;
     private UITools uiTools;
     private FileTransfer fileTransfer;
+
 
     Date date = new Date();
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -163,8 +166,18 @@ public class ClientUI implements Observer
         openToolsButton.setOpaque(false);
         openToolsButton.setEnabled(false);
 
-        drawArea = new DrawArea(true);
-        drawArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        try
+        {
+            drawArea = new DrawArea(ipAddress,false,mainFrame);
+            drawAreaPanel = new JPanel();
+            drawAreaPanel.add(drawArea);
+            scrollDrawAreaPanel = new JScrollPane(drawAreaPanel);
+            scrollDrawAreaPanel.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
         chatPanel = new JPanel();
         chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));

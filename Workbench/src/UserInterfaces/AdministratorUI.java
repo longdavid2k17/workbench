@@ -31,6 +31,8 @@ public class AdministratorUI implements Observer
     private JLabel addressLabel, authCodeLabel;
     private JScrollPane scrollChatPanel, scrollUserPanel;
     private JButton clearBtn, textButton, colorButton, rubberButton, sendInviteButton;
+    private JPanel drawAreaPanel;
+    private JScrollPane scrollDrawAreaPanel;
     private DrawArea drawArea;
     private UITools uiTools;
     private FileTransfer fileTransfer;
@@ -114,6 +116,7 @@ public class AdministratorUI implements Observer
 
         uiTools = new UITools();
         fileTransfer = new FileTransfer(mainFrame, chatPanel);
+
 
         createUI();
 
@@ -230,8 +233,21 @@ public class AdministratorUI implements Observer
         sendInviteButton.setBackground(Color.white);
         sendInviteButton.setOpaque(false);
 
-        drawArea = new DrawArea(true);
-        drawArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+        try
+        {
+            drawArea = new DrawArea(ipAddress,true,mainFrame);
+            drawAreaPanel = new JPanel();
+            drawAreaPanel.add(drawArea);
+            scrollDrawAreaPanel = new JScrollPane(drawAreaPanel);
+            scrollDrawAreaPanel.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        //drawArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
         addressLabel = new JLabel();
         addressLabel.setText(ipAddress);
@@ -412,7 +428,7 @@ public class AdministratorUI implements Observer
             }
             else if (e.getSource() == textButton)
             {
-                drawArea.text();
+                //drawArea.text();
             }
             else if (e.getSource() == rubberButton)
             {

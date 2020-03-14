@@ -8,7 +8,7 @@ public class UITools
 {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-    public void resizeAdminUI(JPanel chatPanel, JPanel usersPanel, DrawArea drawArea, JTextArea messeageArea, JScrollPane scrollUserPanel, JScrollPane scrollChatPanel, JButton textButton, JButton colorButton,
+    public void resizeAdminUI(JPanel chatPanel, JPanel usersPanel, JPanel drawArea, JTextArea messeageArea, JScrollPane scrollUserPanel, JScrollPane scrollChatPanel, JButton textButton, JButton colorButton,
                     JButton clearBtn, JButton rubberButton, JButton settingsButton, JButton sendButton,
                     JButton sendFileButton, JButton sendInviteButton, JLabel authCodeLabel, JLabel addressLabel, JButton reciveFileButton)
     {
@@ -158,7 +158,7 @@ public class UITools
         }
     }
 
-    public void resizeClientUI(JPanel chatPanel, JPanel usersPanel, DrawArea drawArea, JTextArea messeageArea, JScrollPane scrollUserPanel, JScrollPane scrollChatPanel, JButton settingsButton, JButton sendButton,
+    public void resizeClientUI(JPanel chatPanel, JPanel usersPanel, JPanel drawArea, JTextArea messeageArea, JScrollPane scrollUserPanel, JScrollPane scrollChatPanel, JButton settingsButton, JButton sendButton,
                        JButton sendFileButton,JButton openToolsButton,JButton reciveFileButton)
     {
         double width = screenSize.getWidth();

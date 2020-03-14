@@ -82,7 +82,7 @@ public class ClientTools extends JFrame
             }
             else if (e.getSource() == textButton)
             {
-                drawAreaPointer.text();
+                //drawAreaPointer.text();
             }
             else if (e.getSource() == rubberButton)
             {
