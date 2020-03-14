@@ -1,36 +1,45 @@
 package UserInterfaces;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.awt.event.*;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Date;
+import java.util.Observable;
+import java.util.Observer;
 
 import DrawArea.DrawArea;
 import Session.*;
 import UtilitiesPackage.UITools;
+import VoiceChatPackage.*;
 
-
-public class AdministratorUI
+public class AdministratorUI implements Observer
 {
     private JFrame mainFrame;
     private JPanel chatPanel, usersPanel;
     private JTextArea messeageArea;
-    private JButton settingsButton, sendButton, sendFileButton;
+    private JButton settingsButton, sendButton, sendFileButton, reciveFileButton;
     private JLabel addressLabel, authCodeLabel;
     private JScrollPane scrollChatPanel, scrollUserPanel;
     private JButton clearBtn, textButton, colorButton, rubberButton, sendInviteButton;
     private DrawArea drawArea;
     private UITools uiTools;
     private FileTransfer fileTransfer;
+    private ChatAccess access;
+    private MicTester micTester;
 
     private String nickname;
     private String authCode;
-    private String ipAdress;
+    private String ipAddress;
     private int port;
 
     Date date = new Date();
@@ -39,6 +48,56 @@ public class AdministratorUI
     ImageIcon micIcon = new ImageIcon("src/Resources/Mic.png");
     ImageIcon noMicIcon = new ImageIcon("src/Resources/noMic.gif");
 
+    private static ServerSocket serverSocket = null;
+    private static Socket clientSocket = null;
+    private static final int maxClientsCount = 10;
+    private static final ClientThread[] threads = new ClientThread[maxClientsCount];
+
+    private class MicTester extends Thread
+    {
+        private TargetDataLine mic = null;
+        public MicTester()
+        {
+
+        }
+        @Override
+        public void run()
+        {
+
+            try
+            {
+                AudioFormat af = SoundPacket.defaultFormat;
+                DataLine.Info info = new DataLine.Info(TargetDataLine.class, null);
+                mic = (TargetDataLine) (AudioSystem.getLine(info));
+                mic.open(af);
+                mic.start();
+            }
+            catch (Exception e)
+            {
+                JOptionPane.showMessageDialog(mainFrame,"Microphone not detected.\nPress OK to close this program", "Error",JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+            for (;;)
+            {
+                Utils.sleep(10);
+                if(mic.available()>0){
+                    byte[] buff=new byte[SoundPacket.defaultDataLenght];
+                    mic.read(buff,0,buff.length);
+                    long tot=0;
+                    for(int i=0;i<buff.length;i++) tot+=MicThread.amplification*Math.abs(buff[i]);
+                    tot*=2.5;
+                    tot/=buff.length;
+                    //micLev.setValue((int)tot);
+                }
+            }
+        }
+        private void close()
+        {
+            if(mic!=null) mic.close();
+            stop();
+        }
+    }
+
     public String getNickname()
     {
         return nickname;
@@ -46,23 +105,66 @@ public class AdministratorUI
 
     AdministratorUI(String ipAddress, String authCode, String nickname, int port) throws IOException
     {
-        this.ipAdress = ipAddress;
+        this.ipAddress = ipAddress;
         this.authCode = authCode;
         this.nickname = nickname;
         this.port = port;
+        access = new ChatAccess();
+        access.addObserver(this);
 
         uiTools = new UITools();
         fileTransfer = new FileTransfer(mainFrame, chatPanel);
 
         createUI();
-        /*if(isMicAvalibleForUser==true)
+
+        try
         {
-            newUserLabel = new JLabel("Użytkownik: " + nickname + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", micIcon, JLabel.LEFT);
+            access.InitSocket(ipAddress,port);
         }
-        else
+        catch (IOException ex)
         {
-            newUserLabel = new JLabel("Użytkownik: " + nickname + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", noMicIcon, JLabel.LEFT);
-        }*/
+            System.out.println("Nie udało się podłączyć do serwera na " + ipAddress + " : " + port);
+            ex.printStackTrace();
+            System.exit(0);
+        }
+        new Thread()
+        {
+            //start server in new thread
+            @Override
+            public void run()
+            {
+                try
+                {
+                    new VoiceChatServer(8765,true);
+                }
+                catch (Exception ex)
+                {
+                    JOptionPane.showMessageDialog(mainFrame,ex,mainFrame.getTitle(),JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
+                }
+            }
+        }.start();
+        new Thread()
+        {
+            @Override
+            public void run() {
+                for (;;)
+                {
+                    Utils.sleep(100);
+                      /* if (!Log.get().equals(log.getText()))
+                       {
+                           log.setText(Log.get());
+                           log.getCaret().setDot(Log.get().length());
+                       }*/
+                }
+            }
+        }.start();
+
+        micTester = new MicTester();
+        micTester.start();
+        new VoiceClient(ipAddress,8765).start();
+
+
         JLabel newUserLabel = new JLabel("Użytkownik: " + getNickname() + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", micIcon, JLabel.LEFT);
         usersPanel.add(newUserLabel);
     }
@@ -78,6 +180,14 @@ public class AdministratorUI
         mainFrame.setLocationRelativeTo(null);
         mainFrame.getContentPane().setBackground(new Color(222,240,252));
         mainFrame.validate();
+        mainFrame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                System.exit(0);
+            }
+        });
 
         clearBtn = new JButton("Wyczyść");
         clearBtn.addActionListener(actionListener);
@@ -124,7 +234,7 @@ public class AdministratorUI
         drawArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
         addressLabel = new JLabel();
-        addressLabel.setText(ipAdress);
+        addressLabel.setText(ipAddress);
         addressLabel.setVisible(false);
         mainFrame.add(addressLabel);
 
@@ -149,6 +259,27 @@ public class AdministratorUI
         messeageArea.setBackground(Color.white);
         messeageArea.setVisible(true);
         messeageArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        messeageArea.addKeyListener(new KeyAdapter()
+        {
+            @Override
+            public void keyPressed(KeyEvent e)
+            {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    try
+                    {
+                        String messageString=nickname+" : "+messeageArea.getText();
+                        access.send(messageString);
+                        chatPanel.repaint();
+                        messeageArea.setText("");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.out.println(ex.getMessage());
+                    }
+                }
+            }
+        });
 
         scrollChatPanel = new JScrollPane(chatPanel);
         scrollChatPanel.setVisible(true);
@@ -171,6 +302,14 @@ public class AdministratorUI
         sendFileButton.setForeground(Color.BLACK);
         sendFileButton.setBackground(Color.white);
 
+        reciveFileButton = new JButton("Odbierz plik");
+        reciveFileButton.setBorder(new RoundedBorder(30));
+        reciveFileButton.addActionListener(actionListener);
+        reciveFileButton.setFocusPainted(false);
+        reciveFileButton.setOpaque(false);
+        reciveFileButton.setForeground(Color.BLACK);
+        reciveFileButton.setBackground(Color.white);
+
         usersPanel = new JPanel();
         usersPanel.setBackground(Color.white);
         usersPanel.setLayout(new BoxLayout(usersPanel, BoxLayout.Y_AXIS));
@@ -182,10 +321,19 @@ public class AdministratorUI
         scrollUserPanel.setVisible(true);
         scrollUserPanel.setViewportView(usersPanel);
 
-        uiTools.resizeAdminUI(chatPanel, usersPanel, drawArea, messeageArea, scrollUserPanel, scrollChatPanel, textButton, colorButton, clearBtn, rubberButton, settingsButton, sendButton, sendFileButton, sendInviteButton, authCodeLabel, addressLabel);
+        uiTools.resizeAdminUI(chatPanel, usersPanel, drawArea, messeageArea, scrollUserPanel, scrollChatPanel, textButton, colorButton, clearBtn, rubberButton, settingsButton, sendButton, sendFileButton, sendInviteButton, authCodeLabel, addressLabel,reciveFileButton);
         sendInviteButton.setVisible(true);
         authCodeLabel.setVisible(true);
         addressLabel.setVisible(true);
+
+        mainFrame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                access.close();
+            }
+        });
 
         mainFrame.add(sendButton);
         mainFrame.add(scrollUserPanel);
@@ -197,8 +345,56 @@ public class AdministratorUI
         mainFrame.add(clearBtn);
         mainFrame.add(rubberButton);
         mainFrame.add(sendInviteButton);
+        mainFrame.add(reciveFileButton);
         mainFrame.add(drawArea);
         mainFrame.add(settingsButton);
+
+        Thread receivingThread = new Thread()
+        {
+            @Override
+            public void run()
+            {
+                int portNumber = 9876;
+                try
+                {
+                    serverSocket = new ServerSocket(portNumber);
+                    System.out.println("Uruchomiono serwer czatu na porcie: "+portNumber);
+                }
+                catch (IOException e)
+                {
+                    System.out.println(e);
+                }
+
+                while (true)
+                {
+                    try
+                    {
+                        clientSocket = serverSocket.accept();
+                        int i = 0;
+                        for (i = 0; i < maxClientsCount; i++)
+                        {
+                            if (threads[i] == null)
+                            {
+                                (threads[i] = new ClientThread(clientSocket, threads)).start();
+                                break;
+                            }
+                        }
+                        if (i == maxClientsCount)
+                        {
+                            PrintStream os = new PrintStream(clientSocket.getOutputStream());
+                            os.println("Serwer obciążony. Nie udało się połączyć.");
+                            os.close();
+                            clientSocket.close();
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        System.out.println(e);
+                    }
+                }
+            }
+        };
+        receivingThread.start();
 
         usersPanel.validate();
         scrollUserPanel.validate();
@@ -236,8 +432,7 @@ public class AdministratorUI
             }
             else if (e.getSource() == sendInviteButton)
             {
-                //String invite = "Adres serwera: " + connection.getIpAdress() + " | Kod dostępu do sesji: " + connection.getAuthCode();
-                String invite = "Adres serwera: " + ipAdress + " | Kod dostępu do sesji: " + authCode;
+                String invite = "Adres serwera: " + ipAddress + " | Kod dostępu do sesji: " + authCode;
                 StringSelection stringSelection = new StringSelection(invite);
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(stringSelection, null);
@@ -253,12 +448,8 @@ public class AdministratorUI
                 try
                 {
                     String messageString=nickname+" : "+messeageArea.getText();
-                    JLabel messageLabel = new JLabel(messageString);
-                    chatPanel.add(messageLabel);
-                    //serverConnection.sendMessage(messageString);
+                    access.send(messageString);
                     chatPanel.repaint();
-                    System.out.println("TEST WIADOMOŚCI - "+messageString);
-
                     messeageArea.setText("");
 
                 }
@@ -267,7 +458,33 @@ public class AdministratorUI
                     System.out.println(ex.getMessage());
                 }
             }
+            else if(e.getSource() == reciveFileButton)
+            {
+                try
+                {
+                    new FileReciverFrame(ipAddress);
+                }
+                catch (IOException ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
         }
     };
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        final Object finalArg = arg;
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                chatPanel.add(new JLabel(finalArg.toString()));
+                chatPanel.revalidate();
+                chatPanel.repaint();
+            }
+        });
+    }
 }
 

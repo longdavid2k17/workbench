@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.text.ParseException;
 import java.util.StringTokenizer;
 
 public class ConfigurationUI extends JFrame

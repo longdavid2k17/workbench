@@ -1,8 +1,8 @@
 package UserInterfaces;
 
-import UtilitiesPackage.MicThread;
-import UtilitiesPackage.SoundPacket;
-import UtilitiesPackage.Utils;
+import VoiceChatPackage.MicThread;
+import VoiceChatPackage.SoundPacket;
+import VoiceChatPackage.Utils;
 
 import javax.sound.sampled.*;
 import javax.swing.*;

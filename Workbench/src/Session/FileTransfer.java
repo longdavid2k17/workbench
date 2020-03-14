@@ -26,8 +26,7 @@ public class FileTransfer
     boolean isSending = false;
 
     FileOutputStream fos = null;
-    BufferedOutputStream bos = null;     // you may change this
-    //public final static String SERVER = "127.0.0.1";
+    BufferedOutputStream bos = null;
     public final static int FILE_SIZE = 6022386;
 
     public FileTransfer(JFrame framePointer, JPanel chatPanelPointer)
@@ -60,7 +59,6 @@ public class FileTransfer
                         {
                             sock = servsock.accept();
                             System.out.println("Połączono : " + sock);
-                            // send file
                             byte [] mybytearray  = new byte [(int)choosedFile.length()];
                             fis = new FileInputStream(choosedFile);
                             bis = new BufferedInputStream(fis);
@@ -95,27 +93,10 @@ public class FileTransfer
             {
                 if (isSent)
                 {
-                    String messeage = "Użytkownik na czacie wysłał plik " + choosedFile.getName();
-                    JLabel mess = new JLabel(messeage);
-                    mess.setForeground(Color.BLUE.darker());
-                    mess.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                    mess.addMouseListener(new MouseAdapter()
-                    {
-                        @Override
-                        public void mouseClicked(MouseEvent e)
-                        {
-                            try
-                            {
-                                Desktop.getDesktop().browse(new URI("http://www.codejava.net"));
-
-                            }
-                            catch (IOException | URISyntaxException e1)
-                            {
-                                e1.printStackTrace();
-                            }
-                        }
-                    });
-                    chatPanelPointer.add(mess);
+                    String message = "Użytkownik na czacie wysłał plik " + choosedFile.getName();
+                    chatPanelPointer.add(new JLabel(message));
+                    chatPanelPointer.revalidate();
+                    chatPanelPointer.repaint();
                 }
             }
         }

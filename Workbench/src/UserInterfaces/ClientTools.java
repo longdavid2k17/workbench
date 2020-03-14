@@ -1,6 +1,7 @@
 package UserInterfaces;
 
 import DrawArea.DrawArea;
+import UtilitiesPackage.UITools;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +11,7 @@ import java.awt.event.ActionListener;
 public class ClientTools extends JFrame
 {
     JFrame toolsFrame;
-    private JButton clearBtn, textButton, colorButton, rubberButton;
+    private JButton clearBtn, textButton, colorButton, rubberButton, reciveFileButton;
     private DrawArea drawAreaPointer;
 
 

@@ -10,7 +10,7 @@ public class UITools
 
     public void resizeAdminUI(JPanel chatPanel, JPanel usersPanel, DrawArea drawArea, JTextArea messeageArea, JScrollPane scrollUserPanel, JScrollPane scrollChatPanel, JButton textButton, JButton colorButton,
                     JButton clearBtn, JButton rubberButton, JButton settingsButton, JButton sendButton,
-                    JButton sendFileButton, JButton sendInviteButton, JLabel authCodeLabel, JLabel addressLabel)
+                    JButton sendFileButton, JButton sendInviteButton, JLabel authCodeLabel, JLabel addressLabel, JButton reciveFileButton)
     {
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
@@ -24,8 +24,9 @@ public class UITools
             rubberButton.setBounds(290,620,100,30);
             settingsButton.setBounds(400,620,100,30);
             sendInviteButton.setBounds(810,600,150,40);
-            sendFileButton.setBounds(1120,490,100,35);
-            sendButton.setBounds(1000,490,100,35);
+            reciveFileButton.setBounds(1230,490,130,35);
+            sendFileButton.setBounds(1100,490,120,35);
+            sendButton.setBounds(990,490,100,35);
 
             addressLabel.setBounds(600,620,200,20);
             authCodeLabel.setBounds(600,600,200,20);
@@ -118,6 +119,7 @@ public class UITools
             clearBtn.setBounds(190,900,120,40);
             rubberButton.setBounds(320,900,120,40);
             settingsButton.setBounds(450,900,150,40);
+            reciveFileButton.setBounds(2200,700,130,50);
             sendFileButton.setBounds(2020,700,160,50);
             sendButton.setBounds(1900,700,100,50);
             sendInviteButton.setBounds(1540,950,160,40);
@@ -157,7 +159,7 @@ public class UITools
     }
 
     public void resizeClientUI(JPanel chatPanel, JPanel usersPanel, DrawArea drawArea, JTextArea messeageArea, JScrollPane scrollUserPanel, JScrollPane scrollChatPanel, JButton settingsButton, JButton sendButton,
-                       JButton sendFileButton,JButton openToolsButton)
+                       JButton sendFileButton,JButton openToolsButton,JButton reciveFileButton)
     {
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
@@ -167,8 +169,9 @@ public class UITools
         {
             settingsButton.setBounds(50,620,100,30);
             openToolsButton.setBounds(160,620,100,30);
-            sendFileButton.setBounds(1120,490,100,35);
-            sendButton.setBounds(1000,490,100,35);
+            reciveFileButton.setBounds(1230,490,130,35);
+            sendFileButton.setBounds(1100,490,120,35);
+            sendButton.setBounds(990,490,100,35);
 
             chatPanel.setBounds(1000,20,320,390);
             chatPanel.setSize(320,390);
@@ -251,6 +254,7 @@ public class UITools
             openToolsButton.setBounds(210,900,150,40);
             sendFileButton.setBounds(2020,700,160,50);
             sendButton.setBounds(1900,700,100,50);
+            reciveFileButton.setBounds(2200,700,130,50);
 
             chatPanel.setMinimumSize(new Dimension(595, 550));
             chatPanel.setMaximumSize(new Dimension(605, 550));
