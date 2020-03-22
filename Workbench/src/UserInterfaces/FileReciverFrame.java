@@ -145,7 +145,6 @@ public class FileReciverFrame extends JFrame
         iconLabel =new JLabel();
         iconLabel.setIcon(biggerPreloadGif);
         iconLabel.setBounds(86,61,128,128);
-        //iconLabel.setBounds(118,93,64,64);
         iconLabel.setVisible(true);
 
         mainFrame.add(iconLabel);

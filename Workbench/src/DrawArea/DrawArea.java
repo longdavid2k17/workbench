@@ -9,11 +9,11 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 @SuppressWarnings("serial")
 public class DrawArea extends JPanel
@@ -23,20 +23,15 @@ public class DrawArea extends JPanel
     private static final Color LABEL_DRAW_COLOR = new Color(180, 180, 255);
     private static final Stroke LABEL_DRAW_STROKE = new BasicStroke(1);
     private static final Stroke BIMAGE_DRAW_STROKE = new BasicStroke(3);
-    private static final int COLOR_DIV = 5;
     private BufferedImage bImage = new BufferedImage(BI_WIDTH, BI_HEIGHT, BufferedImage.TYPE_INT_RGB);
     private List<Point> pointList = new ArrayList<Point>();
     private JLabel imageLabel;
-    private List<Color> colorList = new ArrayList<Color>();
-    private Random random = new Random();
     private Color color = Color.BLACK;
     private boolean isRubberSelected = false;
     private boolean isAllowedToDraw = true;
     private JFrame framePointer;
-    private File tempFile, recivedFile;
+    private File tempFile;
 
-    private Socket socket = null;
-    private Socket reciverSocket = null;
     private ServerSocket serverSocket = null;
     private OutputStream os = null;
     private FileInputStream fis = null;
@@ -52,7 +47,12 @@ public class DrawArea extends JPanel
 
     int bytesRead;
     int current = 0;
+    public static ArrayList<String> addressList = new ArrayList<>();
 
+    public static void addToClientList(String arg)
+    {
+        addressList.add(arg);
+    }
 
     public boolean isAllowedToDraw()
     {
@@ -76,7 +76,7 @@ public class DrawArea extends JPanel
         g2d.dispose();
 
         serverSocket = new ServerSocket(41567);
-        serverSocket.setSoTimeout(180000);
+        serverSocket.setSoTimeout(180000000);
 
         imageLabel = new JLabel(new ImageIcon(bImage))
         {
@@ -109,20 +109,28 @@ public class DrawArea extends JPanel
                         }
                         try
                         {
+                            for(int i=0;i<addressList.size();i++)
+                            {
 
-                        /*
-                        192.168.008.157
-                        potrzebna tablica adresów IP do przekazania w argumencie i pętlą wysyłać do kolejnych adresów
-                         */
 
-                            Socket client = new Socket("192.168.8.176", 41567);
-                            System.out.println("Nasłuch portów w celu wysłania do klienta ");
-                            tempFile = new File("blackbrd.jpg");
-                            ImageIO.write(bImage, "jpg", tempFile);
-                            System.out.println("Utworzono plik podglądowy!");
-                            ImageIO.write(bImage, "JPG", client.getOutputStream());
-                            client.close();
-                            System.out.println("Wysłano!");
+
+                            //System.out.println("Długość listy adresów: "+addressList.size());
+                                    //"192.168.8.176"
+                                if(!addressList.get(i).equals(serverAddress))
+                                {
+                                    Socket client = new Socket(addressList.get(i), 41567);
+                                    System.out.println("Nasłuch portów w celu wysłania do klienta ");
+                                    tempFile = new File("blackbrd.jpg");
+                                    ImageIO.write(bImage, "jpg", tempFile);
+                                    System.out.println("Utworzono plik podglądowy!");
+                                    ImageIO.write(bImage, "JPG", client.getOutputStream());
+                                    System.out.println("Wysłano!");
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                           }
                         }
                         catch (IOException e)
                         {
@@ -161,6 +169,7 @@ public class DrawArea extends JPanel
                             imageLabel.repaint();
                             framePointer.repaint();
                             System.out.println("Zaktualizowano");
+                            server.close();
                         }
                         catch (SocketTimeoutException st)
                         {
@@ -225,11 +234,12 @@ public class DrawArea extends JPanel
         public void mouseReleased(MouseEvent e)
         {
             Graphics2D g2d = bImage.createGraphics();
-            //g2d.setColor(colorList.get(random.nextInt(colorList.size())));
             g2d.setColor(color);
             g2d.setStroke(BIMAGE_DRAW_STROKE);
-            if (pointList.size() >= 2) {
-                for (int i = 1; i < pointList.size(); i++) {
+            if (pointList.size() >= 2)
+            {
+                for (int i = 1; i < pointList.size(); i++)
+                {
                     int x1 = pointList.get(i - 1).x;
                     int y1 = pointList.get(i - 1).y;
                     int x2 = pointList.get(i).x;
@@ -238,7 +248,6 @@ public class DrawArea extends JPanel
                 }
             }
             g2d.dispose();
-
             pointList.clear();
             imageLabel.repaint();
         }

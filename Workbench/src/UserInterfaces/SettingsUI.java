@@ -60,10 +60,6 @@ public class SettingsUI extends JFrame
                     tot/=buff.length;
                     micLevel.setValue((int)tot);
                 }
-                else
-                {
-                    //SettingFrame.setMicAvalibility(false);
-                }
             }
         }
 
@@ -73,6 +69,7 @@ public class SettingsUI extends JFrame
             stop();
         }
     }
+
     boolean getMicAvalibility()
     {
         return isMicAvalible;
@@ -151,7 +148,6 @@ public class SettingsUI extends JFrame
     }
     private void micVolStateChanged(javax.swing.event.ChangeEvent evt)
     {
-        //GEN-FIRST:event_micVolStateChanged
         MicThread.amplification=((double)(micVolume.getValue()))/100.0;
     }
 }

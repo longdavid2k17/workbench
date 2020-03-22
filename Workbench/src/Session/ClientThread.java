@@ -1,5 +1,7 @@
 package Session;
 
+import DrawArea.DrawArea;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -18,7 +20,6 @@ public class ClientThread extends Thread
 
         this.clientSocket = clientSocket;
         this.threads = threads;
-        //this.clientName = nickname;
         maxClientsCount = threads.length;
     }
 
@@ -31,19 +32,24 @@ public class ClientThread extends Thread
         {
             is = new DataInputStream(clientSocket.getInputStream());
             os = new PrintStream(clientSocket.getOutputStream());
+            DrawArea.addToClientList(clientSocket.getInetAddress().getHostAddress());
+            /////trzeba dodać adres każdego połączonego klienta do tablicy
+
             String name = clientName;
             while (true)
             {
                 os.println("Wprowadź swoją nazwę");
                 name = is.readLine().trim();
-                if (name.indexOf('@') == -1) {
+                if (name.indexOf('@') == -1)
+                {
                     break;
-                } else {
+                }
+                else
+                {
                     os.println("Imie nie może zawierać małpki @");
                 }
             }
 
-            os.println("Połączono " + name + " do czatu.\n");
             synchronized (this)
             {
                 for (int i = 0; i < maxClientsCount; i++)
@@ -58,7 +64,7 @@ public class ClientThread extends Thread
                 {
                     if (threads[i] != null && threads[i] != this)
                     {
-                        threads[i].os.println("Użytkownik " + name + " dołączył do czatu!");
+                        threads[i].os.println(name + " dołączył do czatu!");
                     }
                 }
             }
@@ -104,7 +110,7 @@ public class ClientThread extends Thread
                         {
                             if (threads[i] != null && threads[i].clientName != null)
                             {
-                                threads[i].os.println("<" + name + "> " + line);
+                                threads[i].os.println(name+" : " + line);
                             }
                         }
                     }
@@ -116,7 +122,7 @@ public class ClientThread extends Thread
                 {
                     if (threads[i] != null && threads[i] != this && threads[i].clientName != null)
                     {
-                        threads[i].os.println("Użytkownik " + name + " opuścił czat.");
+                        threads[i].os.println(name + " opuścił czat.");
                     }
                 }
             }

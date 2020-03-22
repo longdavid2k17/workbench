@@ -10,12 +10,12 @@ import java.util.ArrayList;
 public class VoiceClientConnection extends Thread
 {
 
-    private VoiceChatServer serv; //instancja serwera
-    private Socket s; //połączenie z klientem
-    private ObjectInputStream in; //object streams to/from client
+    private VoiceChatServer serv;
+    private Socket s;
+    private ObjectInputStream in;
     private ObjectOutputStream out;
     private long chId;
-    private ArrayList<Message> toSend = new ArrayList<Message>(); //kolejka wiadomości
+    private ArrayList<Message> toSend = new ArrayList<Message>();
 
     public InetAddress getInetAddress() { //zwraca ip klienta
         return s.getInetAddress();
@@ -23,13 +23,11 @@ public class VoiceClientConnection extends Thread
 
     public int getPort()
     {
-        //returns this client's tcp port
         return s.getPort();
     }
 
     public long getChId()
     {
-        //return this client's unique id
         return chId;
     }
 
@@ -38,18 +36,18 @@ public class VoiceClientConnection extends Thread
         this.serv = serv;
         this.s = s;
         byte[] addr = s.getInetAddress().getAddress();
-        chId = (addr[0] << 48 | addr[1] << 32 | addr[2] << 24 | addr[3] << 16) + s.getPort(); //generowanie ID, średnio potrzebne
+        chId = (addr[0] << 48 | addr[1] << 32 | addr[2] << 24 | addr[3] << 16) + s.getPort();
     }
 
-    public void addToQueue(Message m) { //add a message to send to the client
+    public void addToQueue(Message m)
+    {
         try
         {
             toSend.add(m);
-            //dodanie do kolejki wiadomości do wysyłania
         }
         catch (Throwable t)
         {
-            //mutex error, ignore because the server must be as fast as possible
+
         }
     }
 
@@ -58,53 +56,79 @@ public class VoiceClientConnection extends Thread
     {
         try
         {
-            out = new ObjectOutputStream(s.getOutputStream()); //create object streams to/from client
+            out = new ObjectOutputStream(s.getOutputStream());
             in = new ObjectInputStream(s.getInputStream());
         }
-        catch (IOException ex) { //connection error, close connection
-            try {
+        catch (IOException ex)
+        {
+            try
+            {
                 s.close();
-                Log.add("ERROR " + getInetAddress() + ":" + getPort() + " " + ex);
-            } catch (IOException ex1) {
+                Log.add("Błąd " + getInetAddress() + ":" + getPort() + " " + ex);
+            }
+            catch (IOException ex1)
+            {
+
             }
             stop();
         }
-        for (;;) {
-            try {
-                if (s.getInputStream().available() > 0) { //we got something from the client
-                    Message toBroadcast = (Message) in.readObject(); //read data from client
-                    if (toBroadcast.getChId() == -1) { //set its chId and timestamp and pass it to the server
+        for (;;)
+        {
+            try
+            {
+                if (s.getInputStream().available() > 0)
+                {
+                    Message toBroadcast = (Message) in.readObject();
+                    if (toBroadcast.getChId() == -1)
+                    {
                         toBroadcast.setChId(chId);
                         toBroadcast.setTimestamp(System.nanoTime() / 1000000L);
                         serv.addToBroadcastQueue(toBroadcast);
-                    } else {
-                        continue; //invalid message
+                    }
+                    else
+                    {
+                        continue;
                     }
                 }
-                try {
-                    if (!toSend.isEmpty()) {
-                        Message toClient = toSend.get(0); //we got something to send to the client
-                        if (!(toClient.getData() instanceof SoundPacket) || toClient.getTimestamp() + toClient.getTtl() < System.nanoTime() / 1000000L) { //is the message too old or of an unknown type?
-                            Log.add("dropping packet from " + toClient.getChId() + " to " + chId);
+                try
+                {
+                    if (!toSend.isEmpty())
+                    {
+                        Message toClient = toSend.get(0);
+                        if (!(toClient.getData() instanceof SoundPacket) || toClient.getTimestamp() + toClient.getTtl() < System.nanoTime() / 1000000L)
+                        {
+                            Log.add("Zgubione pakiety od " + toClient.getChId() + " do " + chId);
                             continue;
                         }
-                        out.writeObject(toClient); //send the message
-                        toSend.remove(toClient); //and remove it from the queue
-                    } else {
-                        Utils.sleep(10); //avoid busy wait
+                        out.writeObject(toClient);
+                        toSend.remove(toClient);
                     }
-                } catch (Throwable t) {
-                    if (t instanceof IOException) {//connection closed or connection error
+                    else
+                    {
+                        Utils.sleep(10);
+                    }
+                }
+                catch (Throwable t)
+                {
+                    if (t instanceof IOException)
+                    {
                         throw (Exception) t;
-                    } else {//mutex error, try again
+                    }
+                    else
+                    {
                         System.out.println("cc fixmutex");
                         continue;
                     }
                 }
-            } catch (Exception ex) { //connection closed or connection error, kill thread
-                try {
+            }
+            catch (Exception ex)
+            {
+                try
+                {
                     s.close();
-                } catch (IOException ex1) {
+                }
+                catch (IOException ex1)
+                {
                 }
                 stop();
             }

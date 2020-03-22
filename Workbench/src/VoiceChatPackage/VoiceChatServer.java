@@ -1,5 +1,6 @@
 package VoiceChatPackage;
 
+import DrawArea.DrawArea;
 import org.teleal.cling.UpnpService;
 import org.teleal.cling.UpnpServiceImpl;
 import org.teleal.cling.support.igd.PortMappingListener;
@@ -16,18 +17,16 @@ public class VoiceChatServer
     private ArrayList<VoiceClientConnection> clients = new ArrayList<VoiceClientConnection>();
     private int port;
 
-    private UpnpService u; //when upnp is enabled, this points to the upnp service
+    private UpnpService u;
 
     public void addToBroadcastQueue(Message m)
     {
-        //add a message to the broadcast queue. this method is used by all ClientConnection instances
         try
         {
             broadCastQueue.add(m);
         }
         catch (Throwable t)
         {
-            //mutex error, try again
             Utils.sleep(1);
             addToBroadcastQueue(m);
         }
@@ -40,7 +39,6 @@ public class VoiceChatServer
         if(upnp)
         {
             Log.add("Setting up NAT Port Forwarding...");
-            //first we need the address of this machine on the local network
             try
             {
                 Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -97,22 +95,29 @@ public class VoiceChatServer
         }
         try
         {
-            s = new ServerSocket(port); //listen on specified port
+            s = new ServerSocket(port);
             Log.add("Port " + port + ": server started");
             System.out.println("Serwer działa...");
-        } catch (IOException ex) {
+        }
+        catch (IOException ex)
+        {
             Log.add("Server error " + ex + "(port " + port + ")");
             throw new Exception("Error "+ex);
         }
-        new BroadcastThread().start(); //create a BroadcastThread and start it
-        for (;;) { //accept all incoming connection
-            try {
+        new BroadcastThread().start();
+        for (;;)
+        {
+            try
+            {
                 Socket c = s.accept();
                 VoiceClientConnection cc = new VoiceClientConnection(this, c); //create a ClientConnection thread
                 cc.start();
                 addToClients(cc);
                 Log.add("new client " + c.getInetAddress() + ":" + c.getPort() + " on port " + port);
-            } catch (IOException ex) {
+            }
+            catch (IOException ex)
+            {
+
             }
         }
     }
@@ -121,12 +126,11 @@ public class VoiceChatServer
     {
         try
         {
-            clients.add(cc); //add the new connection to the list of connections
+            clients.add(cc);
             System.out.println("Połączono klienta! "+cc.getName());
         }
         catch (Throwable t)
         {
-            //mutex error, try again
             Utils.sleep(1);
             addToClients(cc);
         }
@@ -140,7 +144,6 @@ public class VoiceChatServer
 
         public BroadcastThread()
         {
-
         }
 
         @Override
@@ -150,39 +153,37 @@ public class VoiceChatServer
             {
                 try
                 {
-                    ArrayList<VoiceClientConnection> toRemove = new ArrayList<VoiceClientConnection>(); //create a list of dead connections
+                    ArrayList<VoiceClientConnection> toRemove = new ArrayList<VoiceClientConnection>();
                     for (VoiceClientConnection cc : clients)
                     {
                         if (!cc.isAlive())
                         {
-                            //connection is dead, need to be removed
                             Log.add("dead connection closed: " + cc.getInetAddress() + ":" + cc.getPort() + " on port " + port);
                             toRemove.add(cc);
                         }
                     }
-                    clients.removeAll(toRemove); //delete all dead connections
+                    clients.removeAll(toRemove);
                     if (broadCastQueue.isEmpty())
-                    { //nothing to send
-                        Utils.sleep(10); //avoid busy wait
+                    {
+                        Utils.sleep(10);
                         continue;
                     }
                     else
-                    { //we got something to broadcast
+                    {
                         Message m = broadCastQueue.get(0);
                         for (VoiceClientConnection cc : clients)
                         {
-                            //broadcast the message
                             if (cc.getChId() != m.getChId())
                             {
                                 cc.addToQueue(m);
                             }
                         }
-                        broadCastQueue.remove(m); //remove it from the broadcast queue
+                        broadCastQueue.remove(m);
                     }
                 }
                 catch (Throwable t)
                 {
-                    //mutex error, try again
+
                 }
             }
         }

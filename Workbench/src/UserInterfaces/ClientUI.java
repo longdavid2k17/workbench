@@ -56,9 +56,8 @@ class ChatAccess extends Observable
         receivingThread.start();
     }
 
-    private static final String CRLF = "\r\n"; // newline
+    private static final String CRLF = "\r\n";
 
-    /** Send a line of text */
     public void send(String text)
     {
         try
@@ -90,7 +89,7 @@ public class ClientUI implements Observer
     private JFrame mainFrame;
     private JPanel chatPanel, usersPanel;
     private JTextArea messeageArea;
-    private JButton settingsButton, sendButton, sendFileButton, openToolsButton,reciveFileButton;
+    private JButton settingsButton, sendButton, sendFileButton,reciveFileButton;
     private JScrollPane scrollChatPanel, scrollUserPanel;
     private JPanel drawAreaPanel;
     private JScrollPane scrollDrawAreaPanel;
@@ -109,7 +108,7 @@ public class ClientUI implements Observer
     private int port=9876;
     ChatAccess access;
 
-    ClientUI(String nickname, String ipAddress) throws IOException
+    ClientUI(String ipAddress) throws IOException
     {
         this.nickname = nickname;
         this.ipAddress = ipAddress;
@@ -133,7 +132,7 @@ public class ClientUI implements Observer
         }
         new VoiceClient(ipAddress,8765).start();
 
-        JLabel newUserLabel = new JLabel("Użytkownik: " + nickname + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", noMicIcon, JLabel.LEFT);
+        JLabel newUserLabel = new JLabel("Użytkownik: " + nickname + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", micIcon, JLabel.LEFT);
         usersPanel.add(newUserLabel);
     }
 
@@ -156,15 +155,6 @@ public class ClientUI implements Observer
         settingsButton.setForeground(Color.BLACK);
         settingsButton.setBackground(Color.white);
         settingsButton.setOpaque(false);
-
-        openToolsButton = new JButton("Narzędzia");
-        openToolsButton.addActionListener(actionListener);
-        openToolsButton.setBorder(new RoundedBorder(30));
-        openToolsButton.setFocusPainted(false);
-        openToolsButton.setForeground(Color.BLACK);
-        openToolsButton.setBackground(Color.white);
-        openToolsButton.setOpaque(false);
-        openToolsButton.setEnabled(false);
 
         try
         {
@@ -199,10 +189,13 @@ public class ClientUI implements Observer
                 {
                     try
                     {
-                        String messageString=nickname+" : "+messeageArea.getText();
-                        access.send(messageString);
-                        chatPanel.repaint();
-                        messeageArea.setText("");
+                        if(!messeageArea.getText().isEmpty())
+                        {
+                            String messageString =  messeageArea.getText();
+                            access.send(messageString);
+                            chatPanel.repaint();
+                            messeageArea.setText(null);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -252,10 +245,9 @@ public class ClientUI implements Observer
         scrollUserPanel.setVisible(true);
         scrollUserPanel.setViewportView(usersPanel);
 
-        uiTools.resizeClientUI(chatPanel, usersPanel, drawArea, messeageArea, scrollUserPanel, scrollChatPanel, settingsButton, sendButton, sendFileButton,openToolsButton,reciveFileButton);
+        uiTools.resizeClientUI(chatPanel, usersPanel, drawArea, messeageArea, scrollUserPanel, scrollChatPanel, settingsButton, sendButton, sendFileButton,reciveFileButton);
 
         mainFrame.add(sendButton);
-        mainFrame.add(openToolsButton);
         mainFrame.add(scrollUserPanel);
         mainFrame.add(sendFileButton);
         mainFrame.add(reciveFileButton);
@@ -298,19 +290,18 @@ public class ClientUI implements Observer
             {
                 try
                 {
-                    String messageString=nickname+" : "+messeageArea.getText();
-                    access.send(messageString);
-                    chatPanel.repaint();
-                    messeageArea.setText("");
+                    if(!messeageArea.getText().isEmpty())
+                    {
+                        String messageString =  messeageArea.getText();
+                        access.send(messageString);
+                        chatPanel.repaint();
+                        messeageArea.setText(null);
+                    }
                 }
                 catch (Exception ex)
                 {
                     System.out.println(ex.getMessage());
                 }
-            }
-            else if(e.getSource() == openToolsButton)
-            {
-                ClientTools tools = new ClientTools(drawArea);
             }
             else if(e.getSource() == reciveFileButton)
             {
@@ -326,10 +317,6 @@ public class ClientUI implements Observer
         }
     };
 
-    void setOpenToolsButtonActive()
-    {
-        this.openToolsButton.setEnabled(true);
-    }
 
     @Override
     public void update(Observable o, Object arg)
@@ -340,6 +327,8 @@ public class ClientUI implements Observer
             public void run()
             {
                 chatPanel.add(new JLabel(finalArg.toString()));
+                chatPanel.revalidate();
+                chatPanel.repaint();
             }
         });
     }

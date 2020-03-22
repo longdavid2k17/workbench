@@ -7,12 +7,6 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * contains some static methods used here and there in the code
  * @author dosse

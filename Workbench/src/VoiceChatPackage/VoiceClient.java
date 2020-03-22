@@ -72,7 +72,7 @@ public class VoiceClient extends Thread
         }
         catch (Exception e)
         {
-            System.out.println("client err " + e.toString());
+            System.out.println("Błąd klienta " + e.toString());
         }
     }
 }

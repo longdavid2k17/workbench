@@ -37,9 +37,7 @@ public class AdministratorUI implements Observer
     private UITools uiTools;
     private FileTransfer fileTransfer;
     private ChatAccess access;
-    private MicTester micTester;
 
-    private String nickname;
     private String authCode;
     private String ipAddress;
     private int port;
@@ -55,61 +53,10 @@ public class AdministratorUI implements Observer
     private static final int maxClientsCount = 10;
     private static final ClientThread[] threads = new ClientThread[maxClientsCount];
 
-    private class MicTester extends Thread
-    {
-        private TargetDataLine mic = null;
-        public MicTester()
-        {
-
-        }
-        @Override
-        public void run()
-        {
-
-            try
-            {
-                AudioFormat af = SoundPacket.defaultFormat;
-                DataLine.Info info = new DataLine.Info(TargetDataLine.class, null);
-                mic = (TargetDataLine) (AudioSystem.getLine(info));
-                mic.open(af);
-                mic.start();
-            }
-            catch (Exception e)
-            {
-                JOptionPane.showMessageDialog(mainFrame,"Microphone not detected.\nPress OK to close this program", "Error",JOptionPane.ERROR_MESSAGE);
-                System.exit(0);
-            }
-            for (;;)
-            {
-                Utils.sleep(10);
-                if(mic.available()>0){
-                    byte[] buff=new byte[SoundPacket.defaultDataLenght];
-                    mic.read(buff,0,buff.length);
-                    long tot=0;
-                    for(int i=0;i<buff.length;i++) tot+=MicThread.amplification*Math.abs(buff[i]);
-                    tot*=2.5;
-                    tot/=buff.length;
-                    //micLev.setValue((int)tot);
-                }
-            }
-        }
-        private void close()
-        {
-            if(mic!=null) mic.close();
-            stop();
-        }
-    }
-
-    public String getNickname()
-    {
-        return nickname;
-    }
-
-    AdministratorUI(String ipAddress, String authCode, String nickname, int port) throws IOException
+    AdministratorUI(String ipAddress, String authCode, int port) throws IOException
     {
         this.ipAddress = ipAddress;
         this.authCode = authCode;
-        this.nickname = nickname;
         this.port = port;
         access = new ChatAccess();
         access.addObserver(this);
@@ -154,21 +101,14 @@ public class AdministratorUI implements Observer
                 for (;;)
                 {
                     Utils.sleep(100);
-                      /* if (!Log.get().equals(log.getText()))
-                       {
-                           log.setText(Log.get());
-                           log.getCaret().setDot(Log.get().length());
-                       }*/
                 }
             }
         }.start();
 
-        micTester = new MicTester();
-        micTester.start();
         new VoiceClient(ipAddress,8765).start();
+        DrawArea.addToClientList(ipAddress);
 
-
-        JLabel newUserLabel = new JLabel("Użytkownik: " + getNickname() + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", micIcon, JLabel.LEFT);
+        JLabel newUserLabel = new JLabel("Połączono użytkownika:  (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", micIcon, JLabel.LEFT);
         usersPanel.add(newUserLabel);
     }
 
@@ -284,10 +224,14 @@ public class AdministratorUI implements Observer
                 {
                     try
                     {
-                        String messageString=nickname+" : "+messeageArea.getText();
-                        access.send(messageString);
-                        chatPanel.repaint();
-                        messeageArea.setText("");
+                        if(!messeageArea.getText().isEmpty())
+                        {
+                            String messageString = messeageArea.getText();
+                            access.send(messageString);
+                            chatPanel.repaint();
+                            messeageArea.setText(null);
+                            //messeageArea.
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -463,11 +407,13 @@ public class AdministratorUI implements Observer
             {
                 try
                 {
-                    String messageString=nickname+" : "+messeageArea.getText();
-                    access.send(messageString);
-                    chatPanel.repaint();
-                    messeageArea.setText("");
-
+                    if(!messeageArea.getText().isEmpty())
+                    {
+                        String messageString=messeageArea.getText();
+                        access.send(messageString);
+                        chatPanel.repaint();
+                        messeageArea.setText(null);
+                    }
                 }
                 catch (Exception ex)
                 {

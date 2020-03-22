@@ -12,9 +12,9 @@ import java.util.StringTokenizer;
 public class ConfigurationUI extends JFrame
 {
     JFrame typeActionFrame;
-    JLabel infoLabel, ipAdressLabel, codeAreaLabel, nicknameLabel;
+    JLabel infoLabel, ipAdressLabel, codeAreaLabel;
     JCheckBox adminCheckBox, clientCheckBox;
-    JTextArea codeArea, nicknameArea;
+    JTextArea codeArea;
     JFormattedTextField ipAdressArea;
     JButton startButton;
     boolean isAdmin;
@@ -31,7 +31,7 @@ public class ConfigurationUI extends JFrame
     void createUI()
     {
         typeActionFrame = new JFrame("Skonfiguruj sesję");
-        typeActionFrame.setSize(300,400);
+        typeActionFrame.setSize(300,350);
         typeActionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         typeActionFrame.setResizable(false);
         typeActionFrame.setVisible(true);
@@ -75,26 +75,11 @@ public class ConfigurationUI extends JFrame
         codeArea.setBackground(Color.white);
         typeActionFrame.add(codeArea);
 
-        nicknameLabel = new JLabel("Nickname:");
-        nicknameLabel.setBounds(10,220,100,40);
-        nicknameLabel.setVisible(true);
-        nicknameLabel.setBackground(Color.white);
-        typeActionFrame.add(nicknameLabel);
-
-        nicknameArea = new JTextArea(1,5);
-        nicknameArea.setWrapStyleWord(false);
-        nicknameArea.setEditable(true);
-        nicknameArea.setLineWrap(false);
-        nicknameArea.setBounds(140,220,120,40);
-        nicknameArea.setVisible(true);
-        nicknameArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        nicknameArea.setBackground(Color.white);
-        typeActionFrame.add(nicknameArea);
 
         startButton = new JButton("Uruchom");
         startButton.setVisible(true);
         startButton.setBackground(Color.white);
-        startButton.setBounds(75,290,150,40);
+        startButton.setBounds(75,240,150,40);
         startButton.setBorder(new RoundedBorder(30));
         startButton.setForeground(Color.BLACK);
         startButton.setFocusPainted(false);
@@ -118,11 +103,9 @@ public class ConfigurationUI extends JFrame
                 {
                     adminCheckBox.setEnabled(false);
                     isAdmin=false;
-                    nicknameArea.setText("");
                     ipAdressArea.setText("");
                     ipAdressLabel.setText("Podaj IP serwera");
                     ipAdressArea.setEditable(true);
-                    nicknameArea.setEditable(true);
                     startButton.setText("Połącz");
                     codeAreaLabel.setText("Kod dostępu");
                 }
@@ -150,8 +133,6 @@ public class ConfigurationUI extends JFrame
                     isAdmin=true;
                     ipAdressArea.setEditable(false);
                     ipAdressArea.setText(internalIp);
-                    nicknameArea.setText("Administrator");
-                    nicknameArea.setEditable(false);
                     startButton.setText("Uruchom sesję");
                     codeAreaLabel.setText("Ustaw kod dostępu");
                 }
@@ -170,16 +151,13 @@ public class ConfigurationUI extends JFrame
             {
                 if(clientCheckBox.isSelected()&&!adminCheckBox.isSelected())
                 {
-                    if(!nicknameArea.getText().isEmpty())
-                    {
                         if(!codeArea.getText().isEmpty())
                         {
                             if(!ipAdressArea.getText().equals("000.000.000.000"))
                             {
-                                //new UI(ip, codeArea.getText(), nicknameArea.getText(), 1);
                                 try
                                 {
-                                    ClientUI client = new ClientUI(nicknameArea.getText(), ipAdressArea.getText());
+                                    ClientUI client = new ClientUI(ipAdressArea.getText());
                                     typeActionFrame.dispose();
                                 }
                                 catch (IOException e1)
@@ -196,9 +174,6 @@ public class ConfigurationUI extends JFrame
                         {
                             JOptionPane.showMessageDialog(typeActionFrame,"Błąd! Puste pola!","Błąd",JOptionPane.ERROR_MESSAGE);
                         }
-                    }
-                    else
-                        JOptionPane.showMessageDialog(typeActionFrame,"Błąd! Puste pola!","Błąd",JOptionPane.ERROR_MESSAGE);
                 }
                 else if(adminCheckBox.isSelected()&&!clientCheckBox.isSelected())
                 {
@@ -208,7 +183,7 @@ public class ConfigurationUI extends JFrame
                         {
                             try
                             {
-                                AdministratorUI admin = new AdministratorUI(ipAdressArea.getText(), codeArea.getText(), "Administrator", 9876);
+                                AdministratorUI admin = new AdministratorUI(ipAdressArea.getText(), codeArea.getText(), 9876);
                                 typeActionFrame.dispose();
                             }
                             catch (IOException e1)

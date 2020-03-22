@@ -21,7 +21,7 @@ public class AudioChannel extends Thread
     {
         if (System.nanoTime() - lastPacketTime > 5000000000L)
         {
-            return true; //5 seconds with no data
+            return true;
         }
         else
         {
