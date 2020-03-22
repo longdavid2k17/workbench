@@ -1,6 +1,7 @@
 package Session;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -37,12 +38,14 @@ public class FileTransfer
 
     public void sendFile()
     {
+        FileNameExtensionFilter txtFilter = new FileNameExtensionFilter("Pliki tekstowe (.txt)","txt");
         fileChooser = new JFileChooser();
         fileChooser.setApproveButtonText("Wyślij");
         fileChooser.setDragEnabled(true);
         fileChooser.setBackground(Color.LIGHT_GRAY);
         fileChooser.setDialogTitle("Wybierz plik");
         fileChooser.repaint();
+        fileChooser.setFileFilter(txtFilter);
         if (fileChooser.showSaveDialog(framePointer) == JFileChooser.APPROVE_OPTION)
         {
             File choosedFile = fileChooser.getSelectedFile();
