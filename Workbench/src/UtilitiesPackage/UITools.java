@@ -78,6 +78,40 @@ public class UITools
             drawArea.setMinimumSize(new Dimension(1055, 670));
             drawArea.setMaximumSize(new Dimension(1065, 670));
         }
+        else if(width==1680.0 && height==1050.0)
+        {
+            textButton.setBounds(10,900,75,40);
+            colorButton.setBounds(100,900,40,40);
+            clearBtn.setBounds(170,900,120,40);
+            rubberButton.setBounds(300,900,120,40);
+            settingsButton.setBounds(430,900,150,40);
+            sendFileButton.setBounds(1225,700,120,50);
+            sendButton.setBounds(1100,700,100,50);
+            reciveFileButton.setBounds(1385,700,130,50);
+
+            sendInviteButton.setBounds(900,900,160,40);
+            authCodeLabel.setBounds(700,900,200,30);
+            addressLabel.setBounds(700,920,160,30);
+
+            chatPanel.setPreferredSize(new Dimension(385, 600));
+            chatPanel.setMinimumSize(new Dimension(380, 600));
+            chatPanel.setMaximumSize(new Dimension(390, 600));
+            chatPanel.setBounds(1100,50,500,600);
+            chatPanel.setSize(500,550);
+            scrollChatPanel.setBounds(1100,50,500,600);
+
+            usersPanel.setPreferredSize(new Dimension(450, 200));
+            usersPanel.setMinimumSize(new Dimension(445, 200));
+            usersPanel.setMaximumSize(new Dimension(455, 200));
+            usersPanel.setBounds(1100,790,500,200);
+            usersPanel.setSize(500,200);
+            scrollUserPanel.setBounds(1100,790,500,200);
+
+            drawArea.setBounds(50,50,1000,800);
+            drawArea.setPreferredSize(new Dimension(1000,800));
+            drawArea.setMinimumSize(new Dimension(995, 800));
+            drawArea.setMaximumSize(new Dimension(1005, 800));
+        }
         else if(width==1920.0 && height==1080.0)
         {
             textButton.setBounds(10,900,75,40);
@@ -108,9 +142,9 @@ public class UITools
             scrollUserPanel.setBounds(1400,790,450,200);
 
             drawArea.setBounds(50,50,1300,800);
-            drawArea.setPreferredSize(new Dimension(720,800));
-            drawArea.setMinimumSize(new Dimension(715, 800));
-            drawArea.setMaximumSize(new Dimension(725, 800));
+            drawArea.setPreferredSize(new Dimension(1300,800));
+            drawArea.setMinimumSize(new Dimension(1295, 800));
+            drawArea.setMaximumSize(new Dimension(1305, 800));
         }
 
         else if(width==2560.0 && height==1080.0)
@@ -213,6 +247,33 @@ public class UITools
             drawArea.setPreferredSize(new Dimension(1060,670));
             drawArea.setMinimumSize(new Dimension(1055, 670));
             drawArea.setMaximumSize(new Dimension(1065, 670));
+        }
+        else if(width==1680.0 && height==1050.0)
+        {
+            settingsButton.setBounds(10,900,150,40);
+            sendFileButton.setBounds(1225,700,120,50);
+            sendButton.setBounds(1100,700,100,50);
+            reciveFileButton.setBounds(1385,700,130,50);
+
+
+            chatPanel.setPreferredSize(new Dimension(385, 600));
+            chatPanel.setMinimumSize(new Dimension(380, 600));
+            chatPanel.setMaximumSize(new Dimension(390, 600));
+            chatPanel.setBounds(1100,50,500,600);
+            chatPanel.setSize(500,550);
+            scrollChatPanel.setBounds(1100,50,500,600);
+
+            usersPanel.setPreferredSize(new Dimension(450, 200));
+            usersPanel.setMinimumSize(new Dimension(445, 200));
+            usersPanel.setMaximumSize(new Dimension(455, 200));
+            usersPanel.setBounds(1100,790,500,200);
+            usersPanel.setSize(500,200);
+            scrollUserPanel.setBounds(1100,790,500,200);
+
+            drawArea.setBounds(50,50,1000,800);
+            drawArea.setPreferredSize(new Dimension(1000,800));
+            drawArea.setMinimumSize(new Dimension(995, 800));
+            drawArea.setMaximumSize(new Dimension(1005, 800));
         }
         else if(width==1920.0 && height==1080.0)
         {
