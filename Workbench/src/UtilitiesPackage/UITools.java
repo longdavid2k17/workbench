@@ -82,31 +82,32 @@ public class UITools
         {
             textButton.setBounds(10,900,75,40);
             colorButton.setBounds(100,900,40,40);
-            clearBtn.setBounds(180,900,75,40);
-            rubberButton.setBounds(270,900,75,40);
-            settingsButton.setBounds(355,900,75,40);
+            clearBtn.setBounds(170,900,120,40);
+            rubberButton.setBounds(300,900,120,40);
+            settingsButton.setBounds(430,900,150,40);
+            sendFileButton.setBounds(1535,700,120,50);
+            sendButton.setBounds(1400,700,100,50);
+            reciveFileButton.setBounds(1700,700,130,50);
 
-            chatPanel.setPreferredSize(new Dimension(385, 550));
+            sendInviteButton.setBounds(1200,900,160,40);
+            authCodeLabel.setBounds(1000,900,200,30);
+            addressLabel.setBounds(1000,920,160,30);
 
-            chatPanel.setMinimumSize(new Dimension(380, 550));
-            chatPanel.setMaximumSize(new Dimension(390, 550));
+            chatPanel.setPreferredSize(new Dimension(385, 600));
+            chatPanel.setMinimumSize(new Dimension(380, 600));
+            chatPanel.setMaximumSize(new Dimension(390, 600));
+            chatPanel.setBounds(1400,50,450,600);
+            chatPanel.setSize(450,550);
+            scrollChatPanel.setBounds(1400,50,450,600);
 
             usersPanel.setPreferredSize(new Dimension(450, 200));
-            usersPanel.setBounds(1000,50,450,200);
             usersPanel.setMinimumSize(new Dimension(445, 200));
             usersPanel.setMaximumSize(new Dimension(455, 200));
-
-            sendFileButton.setBounds(2050,700,100,50);
-            sendButton.setBounds(1900,700,100,50);
-
-            scrollChatPanel.setBounds(1000,50,450,550);
-            chatPanel.setBounds(1000,50,450,550);
-            chatPanel.setSize(450,550);
-
-            scrollUserPanel.setBounds(1000,790,450,200);
-            usersPanel.setBounds(1000,790,450,200);
+            usersPanel.setBounds(1400,790,450,200);
             usersPanel.setSize(450,200);
+            scrollUserPanel.setBounds(1400,790,450,200);
 
+            drawArea.setBounds(50,50,1300,800);
             drawArea.setPreferredSize(new Dimension(720,800));
             drawArea.setMinimumSize(new Dimension(715, 800));
             drawArea.setMaximumSize(new Dimension(725, 800));
@@ -215,27 +216,26 @@ public class UITools
         }
         else if(width==1920.0 && height==1080.0)
         {
-            settingsButton.setBounds(50,900,75,40);
-            sendFileButton.setBounds(2050,700,100,50);
-            sendButton.setBounds(1900,700,100,50);
+            settingsButton.setBounds(20,900,150,40);
+            sendFileButton.setBounds(1535,700,120,50);
+            sendButton.setBounds(1400,700,100,50);
+            reciveFileButton.setBounds(1700,700,130,50);
 
-            chatPanel.setPreferredSize(new Dimension(385, 550));
-            chatPanel.setMinimumSize(new Dimension(380, 550));
-            chatPanel.setMaximumSize(new Dimension(390, 550));
+            chatPanel.setPreferredSize(new Dimension(385, 600));
+            chatPanel.setMinimumSize(new Dimension(380, 600));
+            chatPanel.setMaximumSize(new Dimension(390, 600));
+            chatPanel.setBounds(1400,50,450,600);
+            chatPanel.setSize(450,550);
+            scrollChatPanel.setBounds(1400,50,450,600);
 
             usersPanel.setPreferredSize(new Dimension(450, 200));
-            usersPanel.setBounds(1000,50,450,200);
             usersPanel.setMinimumSize(new Dimension(445, 200));
             usersPanel.setMaximumSize(new Dimension(455, 200));
-
-            scrollChatPanel.setBounds(1000,50,450,550);
-            chatPanel.setBounds(1000,50,450,550);
-            chatPanel.setSize(450,550);
-
-            scrollUserPanel.setBounds(1000,790,450,200);
-            usersPanel.setBounds(1000,790,450,200);
+            usersPanel.setBounds(1400,790,450,200);
             usersPanel.setSize(450,200);
+            scrollUserPanel.setBounds(1400,790,450,200);
 
+            drawArea.setBounds(50,50,1300,800);
             drawArea.setPreferredSize(new Dimension(720,800));
             drawArea.setMinimumSize(new Dimension(715, 800));
             drawArea.setMaximumSize(new Dimension(725, 800));
