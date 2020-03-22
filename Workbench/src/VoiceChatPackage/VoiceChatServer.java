@@ -1,6 +1,5 @@
 package VoiceChatPackage;
 
-import DrawArea.DrawArea;
 import org.teleal.cling.UpnpService;
 import org.teleal.cling.UpnpServiceImpl;
 import org.teleal.cling.support.igd.PortMappingListener;
@@ -38,7 +37,7 @@ public class VoiceChatServer
         this.port = port;
         if(upnp)
         {
-            Log.add("Setting up NAT Port Forwarding...");
+            Log.add("Rozpoczęcie przekazywanie portów NAT...");
             try
             {
                 Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -46,9 +45,9 @@ public class VoiceChatServer
             }
             catch (SocketException ex)
             {
-                Log.add("Network error");
-                System.out.println("Błąd!!!");
-                throw new Exception("Network error");
+                Log.add("Błąd sieci");
+                System.out.println("Błąd sieci");
+                throw new Exception("Błąd sieci");
             }
             String ipAddress = null;
             Enumeration<NetworkInterface> net = null;
@@ -59,8 +58,8 @@ public class VoiceChatServer
             catch (SocketException e)
             {
                 System.out.println("Nie połączono do żadnej sieci");
-                Log.add("Not connected to any network");
-                throw new Exception("Network error");
+                Log.add("Nie połączono do żadnej sieci");
+                throw new Exception("Błąd sieci");
             }
 
             while (net.hasMoreElements())
@@ -87,8 +86,8 @@ public class VoiceChatServer
             if (ipAddress == null)
             {
                 System.out.println("Nie połączono do żadnej sieci IPv4");
-                Log.add("Not connected to any IPv4 network");
-                throw new Exception("Network error");
+                Log.add("Nie połączono do żadnej sieci IPv4");
+                throw new Exception("Błąd sieci");
             }
             u = new UpnpServiceImpl(new PortMappingListener(new PortMapping(port, ipAddress, PortMapping.Protocol.TCP)));
             u.getControlPoint().search();
@@ -96,13 +95,13 @@ public class VoiceChatServer
         try
         {
             s = new ServerSocket(port);
-            Log.add("Port " + port + ": server started");
+            Log.add("Port " + port + ": serwer rozpoczął pracę");
             System.out.println("Serwer działa...");
         }
         catch (IOException ex)
         {
-            Log.add("Server error " + ex + "(port " + port + ")");
-            throw new Exception("Error "+ex);
+            Log.add("Błąd serwera: " + ex + "(port " + port + ")");
+            throw new Exception("Błąd "+ex);
         }
         new BroadcastThread().start();
         for (;;)
@@ -113,7 +112,7 @@ public class VoiceChatServer
                 VoiceClientConnection cc = new VoiceClientConnection(this, c); //create a ClientConnection thread
                 cc.start();
                 addToClients(cc);
-                Log.add("new client " + c.getInetAddress() + ":" + c.getPort() + " on port " + port);
+                Log.add("Nowy klient " + c.getInetAddress() + ":" + c.getPort() + " na porcie " + port);
             }
             catch (IOException ex)
             {
@@ -136,9 +135,6 @@ public class VoiceChatServer
         }
     }
 
-    /**
-     * broadcasts messages to each ClientConnection, and removes dead ones
-     */
     private class BroadcastThread extends Thread
     {
 
@@ -158,7 +154,7 @@ public class VoiceChatServer
                     {
                         if (!cc.isAlive())
                         {
-                            Log.add("dead connection closed: " + cc.getInetAddress() + ":" + cc.getPort() + " on port " + port);
+                            Log.add("Zamknięto martwe połączenie: " + cc.getInetAddress() + ":" + cc.getPort() + " na porcie " + port);
                             toRemove.add(cc);
                         }
                     }

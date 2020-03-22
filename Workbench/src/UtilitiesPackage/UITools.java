@@ -5,14 +5,14 @@ import java.awt.*;
 
 public class UITools
 {
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+    int width = gd.getDisplayMode().getWidth();
+    int height = gd.getDisplayMode().getHeight();
 
     public void resizeAdminUI(JPanel chatPanel, JPanel usersPanel, JPanel drawArea, JTextArea messeageArea, JScrollPane scrollUserPanel, JScrollPane scrollChatPanel, JButton textButton, JButton colorButton,
                     JButton clearBtn, JButton rubberButton, JButton settingsButton, JButton sendButton,
                     JButton sendFileButton, JButton sendInviteButton, JLabel authCodeLabel, JLabel addressLabel, JButton reciveFileButton)
     {
-        double width = screenSize.getWidth();
-        double height = screenSize.getHeight();
         System.out.println(width+" x "+height);
 
         if(width==1366.0 && height==768.0)
@@ -161,8 +161,6 @@ public class UITools
     public void resizeClientUI(JPanel chatPanel, JPanel usersPanel, JPanel drawArea, JTextArea messeageArea, JScrollPane scrollUserPanel, JScrollPane scrollChatPanel, JButton settingsButton, JButton sendButton,
                        JButton sendFileButton,JButton reciveFileButton)
     {
-        double width = screenSize.getWidth();
-        double height = screenSize.getHeight();
         System.out.println(width+" x "+height);
 
         if(width==1366.0 && height==768.0)

@@ -39,6 +39,7 @@ public class ConfigurationUI extends JFrame
         typeActionFrame.setLocationRelativeTo(null);
         typeActionFrame.getContentPane().setBackground(new Color(222,240,252));
         typeActionFrame.validate();
+        typeActionFrame.setIconImage(new ImageIcon(getClass().getResource("/Resources/app_icon.png")).getImage());
 
         infoLabel = new JLabel("Tryb programu");
         infoLabel.setBounds(90,15,150,30);

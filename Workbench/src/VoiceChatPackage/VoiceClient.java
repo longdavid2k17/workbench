@@ -34,7 +34,7 @@ public class VoiceClient extends Thread
             }
             catch (Exception e)
             {
-                System.out.println("mic unavailable " + e);
+                System.out.println("Mikrofon jest niedostępny. " + e);
             }
             for (;;)
             {

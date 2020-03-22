@@ -43,7 +43,9 @@ public class AdministratorUI implements Observer
     private int port;
 
     Date date = new Date();
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+    int width = gd.getDisplayMode().getWidth();
+    int height = gd.getDisplayMode().getHeight();
     Border border = BorderFactory.createLineBorder(Color.BLACK);
     ImageIcon micIcon = new ImageIcon("src/Resources/Mic.png");
     ImageIcon noMicIcon = new ImageIcon("src/Resources/noMic.gif");
@@ -115,7 +117,7 @@ public class AdministratorUI implements Observer
     void createUI()
     {
         mainFrame = new JFrame("Workbench");
-        mainFrame.setSize(screenSize.width, screenSize.height - 60);
+        mainFrame.setSize(width, height - 60);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setResizable(true);
         mainFrame.setVisible(true);
@@ -123,6 +125,7 @@ public class AdministratorUI implements Observer
         mainFrame.setLocationRelativeTo(null);
         mainFrame.getContentPane().setBackground(new Color(222,240,252));
         mainFrame.validate();
+        mainFrame.setIconImage(new ImageIcon(getClass().getResource("/Resources/app_icon.png")).getImage());
         mainFrame.addWindowListener(new WindowAdapter()
         {
             @Override

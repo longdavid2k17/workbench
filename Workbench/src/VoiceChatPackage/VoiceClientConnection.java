@@ -116,7 +116,7 @@ public class VoiceClientConnection extends Thread
                     }
                     else
                     {
-                        System.out.println("cc fixmutex");
+                        System.out.println("CC Fixmutex");
                         continue;
                     }
                 }

@@ -99,7 +99,9 @@ public class ClientUI implements Observer
 
 
     Date date = new Date();
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+    int width = gd.getDisplayMode().getWidth();
+    int height = gd.getDisplayMode().getHeight();
     Border border = BorderFactory.createLineBorder(Color.BLACK);
     ImageIcon micIcon = new ImageIcon("src/Resources/Mic.png");
     ImageIcon noMicIcon = new ImageIcon("src/Resources/noMic.gif");
@@ -118,8 +120,6 @@ public class ClientUI implements Observer
         uiTools = new UITools();
         fileTransfer = new FileTransfer(mainFrame, chatPanel);
 
-        createUI();
-
         try
         {
             access.InitSocket(ipAddress,port);
@@ -127,9 +127,12 @@ public class ClientUI implements Observer
         catch (IOException ex)
         {
             System.out.println("Nie udało się podłączyć do serwera na " + ipAddress + ":" + port);
+            String message = "Nie udało się połączyć z serwerem na "+ipAddress+":"+port+"\nProgram zostanie zamknięty. Spróbuj ponownie!";
+            JOptionPane.showMessageDialog(mainFrame,message,"Błąd połączenia!",JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
             System.exit(0);
         }
+        createUI();
         new VoiceClient(ipAddress,8765).start();
 
         JLabel newUserLabel = new JLabel("Użytkownik: " + nickname + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", micIcon, JLabel.LEFT);
@@ -139,7 +142,7 @@ public class ClientUI implements Observer
     void createUI()
     {
         mainFrame = new JFrame("Workbench");
-        mainFrame.setSize(screenSize.width, screenSize.height - 60);
+        mainFrame.setSize(width, height - 60);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setResizable(true);
         mainFrame.setVisible(true);
@@ -147,6 +150,7 @@ public class ClientUI implements Observer
         mainFrame.setLocationRelativeTo(null);
         mainFrame.getContentPane().setBackground(new Color(222,240,252));
         mainFrame.validate();
+        mainFrame.setIconImage(new ImageIcon(getClass().getResource("/Resources/app_icon.png")).getImage());
 
         settingsButton = new JButton("Ustawienia");
         settingsButton.addActionListener(actionListener);
