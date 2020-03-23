@@ -26,10 +26,6 @@ You can simply format your's text - change color, font family, font size, and al
 ![Editted text example](https://raw.githubusercontent.com/longdavid2k17/opendocs/master/Screenshots/edditedText.PNG)
 ![Styled text example](https://raw.githubusercontent.com/longdavid2k17/opendocs/master/Screenshots/styledText.PNG)
 
-OpenDocs brings you printing support and exporting to PDF (for now, edited text can be exported just to print format. still working on this).
-![How to print](https://raw.githubusercontent.com/longdavid2k17/opendocs/master/Screenshots/printingOption.PNG)
-![Saving to PDF support](https://raw.githubusercontent.com/longdavid2k17/opendocs/master/Screenshots/savingAsPDF.PNG)
-![Saved PDF file](https://raw.githubusercontent.com/longdavid2k17/opendocs/master/Screenshots/savedPDF.PNG)
 
 # Author
 Software developed by David Kantoch, POLAND
