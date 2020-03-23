@@ -11,20 +11,34 @@ You don't need to install external software, all you need is JAVA. Link to the f
 After launching an app, shows window where you have to write your admins IP to connect to him. Also type auth code and start yours work.
 
 
-![Splash Screen](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/11lap.PNG)
-
+![Configure session](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/11lap.PNG)
+![Configure session client](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/1_start.PNG)
 
 
 It's what main screen looks like.
-![Main Window](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/1_start.PNG)
-How you can see, controlling this software is easy and simple. Most used function are in the most common places (like File Menu).
-Just open file and start writting like Sheakspere
-![OpenFile DIalog](https://raw.githubusercontent.com/longdavid2k17/opendocs/master/Screenshots/openDialog.PNG)
+![Main screen](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/2_okno_glowne.PNG)
 
-You can simply format your's text - change color, font family, font size, and align it to left or right.
-![Simple text example](https://raw.githubusercontent.com/longdavid2k17/opendocs/master/Screenshots/simpleText.PNG)
-![Editted text example](https://raw.githubusercontent.com/longdavid2k17/opendocs/master/Screenshots/edditedText.PNG)
-![Styled text example](https://raw.githubusercontent.com/longdavid2k17/opendocs/master/Screenshots/styledText.PNG)
+How you can see, controlling this software is easy and simple. Most used function are under Draw Area, there are buttons for drawing text, changing color of the next drawing, clear screen and rubber.
+
+As admin you can send invite for your session. Click on "Zaproś do czatu" button , the invitation will copy to clipboard.
+![Simple text example](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/4_sendInv.PNG)
+
+# How text chat and voice chat works
+
+![Chat view](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/3_chat.PNG)
+To use text chat, after creating or joining session, you have to write nickname, which will be used for user reconization. Then you will
+see next sended messages in session. In administrator panel there will be information about connected users
+For voice chat all you need is connected microphone to your computer. Without micro, you will be just hearing the conversation of other users.
+
+![Chat view for client](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/4lap.PNG)
+
+You can also send txt file to connected users. Click on "Wyślij plik", choose one and ask other user for clicking  "Odbierz plik"
+![Send file to user](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/5_sending_files.PNG)
+
+![Awaiting file](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/5_waiting.PNG)
+
+![File recived](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/6_file_recived.PNG)
+
 
 
 # Author
