@@ -87,10 +87,10 @@ class ChatAccess extends Observable
 public class ClientUI implements Observer
 {
     private JFrame mainFrame;
-    private JPanel chatPanel, usersPanel;
+    private JPanel chatPanel;
     private JTextArea messeageArea;
     private JButton settingsButton, sendButton, sendFileButton,reciveFileButton;
-    private JScrollPane scrollChatPanel, scrollUserPanel;
+    private JScrollPane scrollChatPanel;
     private JPanel drawAreaPanel;
     private JScrollPane scrollDrawAreaPanel;
     private DrawArea drawArea;
@@ -103,8 +103,6 @@ public class ClientUI implements Observer
     int width = gd.getDisplayMode().getWidth();
     int height = gd.getDisplayMode().getHeight();
     Border border = BorderFactory.createLineBorder(Color.BLACK);
-    ImageIcon micIcon = new ImageIcon("src/Resources/Mic.png");
-    ImageIcon noMicIcon = new ImageIcon("src/Resources/noMic.gif");
 
     private String nickname, ipAddress;
     private int port=9876;
@@ -134,9 +132,6 @@ public class ClientUI implements Observer
         }
         createUI();
         new VoiceClient(ipAddress,8765).start();
-
-        JLabel newUserLabel = new JLabel("Użytkownik: " + nickname + " (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", micIcon, JLabel.LEFT);
-        usersPanel.add(newUserLabel);
     }
 
     void createUI()
@@ -238,21 +233,9 @@ public class ClientUI implements Observer
         reciveFileButton.setForeground(Color.BLACK);
         reciveFileButton.setBackground(Color.white);
 
-        usersPanel = new JPanel();
-        usersPanel.setBackground(Color.white);
-        usersPanel.setLayout(new BoxLayout(usersPanel, BoxLayout.Y_AXIS));
-        usersPanel.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-
-        mainFrame.add(usersPanel);
-
-        scrollUserPanel = new JScrollPane();
-        scrollUserPanel.setVisible(true);
-        scrollUserPanel.setViewportView(usersPanel);
-
-        uiTools.resizeClientUI(chatPanel, usersPanel, drawArea, messeageArea, scrollUserPanel, scrollChatPanel, settingsButton, sendButton, sendFileButton,reciveFileButton);
+        uiTools.resizeClientUI(chatPanel, drawArea, messeageArea, scrollChatPanel, settingsButton, sendButton, sendFileButton,reciveFileButton);
 
         mainFrame.add(sendButton);
-        mainFrame.add(scrollUserPanel);
         mainFrame.add(sendFileButton);
         mainFrame.add(reciveFileButton);
         mainFrame.add(scrollChatPanel);
@@ -268,8 +251,6 @@ public class ClientUI implements Observer
                 access.close();
             }
         });
-        usersPanel.validate();
-        scrollUserPanel.validate();
         mainFrame.validate();
         mainFrame.repaint();
     }
