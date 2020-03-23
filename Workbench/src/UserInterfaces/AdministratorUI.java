@@ -13,6 +13,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
@@ -41,6 +42,9 @@ public class AdministratorUI implements Observer
     private String authCode;
     private String ipAddress;
     private int port;
+
+    public static boolean userConnected = false;
+    public static String userName = null;
 
     Date date = new Date();
     GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -79,9 +83,9 @@ public class AdministratorUI implements Observer
             ex.printStackTrace();
             System.exit(0);
         }
+
         new Thread()
         {
-            //start server in new thread
             @Override
             public void run()
             {
@@ -96,10 +100,12 @@ public class AdministratorUI implements Observer
                 }
             }
         }.start();
+
         new Thread()
         {
             @Override
-            public void run() {
+            public void run()
+            {
                 for (;;)
                 {
                     Utils.sleep(100);
@@ -107,11 +113,51 @@ public class AdministratorUI implements Observer
             }
         }.start();
 
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                for (;;)
+                {
+                    checkForConnection();
+                    System.out.println(userConnected);
+                    try
+                    {
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+
         new VoiceClient(ipAddress,8765).start();
         DrawArea.addToClientList(ipAddress);
+    }
 
-        JLabel newUserLabel = new JLabel("Połączono użytkownika:  (godzina połączenia z sesją: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ")", micIcon, JLabel.LEFT);
-        usersPanel.add(newUserLabel);
+    public static void setUserConnected(boolean value)
+    {
+        userConnected = value;
+    }
+    public static void setUserName(String name)
+    {
+        userName = name;
+    }
+
+    void checkForConnection()
+    {
+        if(userConnected==true)
+        {
+            Date freshdate = new Date();
+            usersPanel.add(new JLabel("Połączono użytkownika "+userName+" : " + freshdate.getHours() + ":" + freshdate.getMinutes() + ":" + freshdate.getSeconds() + ")", micIcon, JLabel.LEFT));
+            usersPanel.repaint();
+            usersPanel.revalidate();
+            userConnected=false;
+            userName=null;
+        }
     }
 
     void createUI()

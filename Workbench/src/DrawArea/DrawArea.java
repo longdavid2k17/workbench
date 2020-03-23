@@ -47,8 +47,17 @@ public class DrawArea extends JPanel
 
     int bytesRead;
     int current = 0;
+
+    /**
+     * this addressList keeps all ip addresses of connected clients, and uses them to send image throught LAN
+     */
     public static ArrayList<String> addressList = new ArrayList<>();
 
+
+    /**
+     *
+     * @param arg is value saved in addresList
+     */
     public static void addToClientList(String arg)
     {
         addressList.add(arg);
@@ -59,11 +68,22 @@ public class DrawArea extends JPanel
         return isAllowedToDraw;
     }
 
+    /**
+     * sets @param value, true for admin connection and false for clients
+     * @param allowedToDraw
+     */
     public void setAllowedToDraw(boolean allowedToDraw)
     {
         isAllowedToDraw = allowedToDraw;
     }
 
+    /**
+     * DrawArea constructor
+     * @param serverAddress is needed for setting server socket
+     * @param isAllowedToDraw is information about instruction to execute
+     * @param framePointer is kinda pointer for JFrame
+     * @throws IOException
+     */
     public DrawArea(String serverAddress, boolean isAllowedToDraw, JFrame framePointer) throws IOException
     {
         setAllowedToDraw(isAllowedToDraw);
@@ -92,6 +112,9 @@ public class DrawArea extends JPanel
             imageLabel.addMouseListener(myMouseAdapter);
             imageLabel.addMouseMotionListener(myMouseAdapter);
 
+            /**
+             * this thread services sending image throught socket
+             */
             new Thread()
             {
                 @Override
@@ -107,15 +130,11 @@ public class DrawArea extends JPanel
                         {
                             e.printStackTrace();
                         }
+
                         try
                         {
                             for(int i=0;i<addressList.size();i++)
                             {
-
-
-
-                            //System.out.println("Długość listy adresów: "+addressList.size());
-                                    //"192.168.8.176"
                                 if(!addressList.get(i).equals(serverAddress))
                                 {
                                     Socket client = new Socket(addressList.get(i), 41567);
@@ -145,6 +164,9 @@ public class DrawArea extends JPanel
         }
         else
         {
+            /**
+             * this thread services getting image from server and setting it as DrawArea without drawing permission
+             */
             new Thread()
             {
                 @Override
@@ -190,8 +212,9 @@ public class DrawArea extends JPanel
         add(imageLabel, BorderLayout.CENTER);
     }
 
-
-
+    /**
+     * clear method for clearing all the DrawArea
+     */
     public void clear()
     {
         Graphics2D g2 = bImage.createGraphics();
@@ -201,6 +224,10 @@ public class DrawArea extends JPanel
         imageLabel.repaint();
     }
 
+    /**
+     * paintInLabel method for drawing action
+     * @param g
+     */
     private void paintInLabel(Graphics g)
     {
         Graphics2D g2d = (Graphics2D) g;
@@ -220,6 +247,9 @@ public class DrawArea extends JPanel
         }
     }
 
+    /**
+     * class MyMouseAdapter for mouse actions
+     */
     private class MyMouseAdapter extends MouseAdapter
     {
 

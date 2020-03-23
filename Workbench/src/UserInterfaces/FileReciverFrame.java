@@ -69,7 +69,7 @@ public class FileReciverFrame extends JFrame
 
                 byte[] mybytearray = new byte[FILE_SIZE];
                 InputStream is = sock.getInputStream();
-                newRecivedFile = new File("newFile.txt");
+                newRecivedFile = new File("downloaded_file.txt");
                 fos = new FileOutputStream(newRecivedFile);
                 bos = new BufferedOutputStream(fos);
                 bytesRead = is.read(mybytearray, 0, mybytearray.length);

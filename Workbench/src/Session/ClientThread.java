@@ -1,6 +1,7 @@
 package Session;
 
 import DrawArea.DrawArea;
+import UserInterfaces.AdministratorUI;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -33,7 +34,6 @@ public class ClientThread extends Thread
             is = new DataInputStream(clientSocket.getInputStream());
             os = new PrintStream(clientSocket.getOutputStream());
             DrawArea.addToClientList(clientSocket.getInetAddress().getHostAddress());
-            /////trzeba dodać adres każdego połączonego klienta do tablicy
 
             String name = clientName;
             while (true)
@@ -65,6 +65,8 @@ public class ClientThread extends Thread
                     if (threads[i] != null && threads[i] != this)
                     {
                         threads[i].os.println(name + " dołączył do czatu!");
+                        AdministratorUI.setUserConnected(true);
+                        AdministratorUI.setUserName(name);
                     }
                 }
             }
