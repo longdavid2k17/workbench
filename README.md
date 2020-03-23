@@ -11,12 +11,12 @@ You don't need to install external software, all you need is JAVA. Link to the f
 After launching an app, shows window where you have to write your admins IP to connect to him. Also type auth code and start yours work.
 
 
-![Splash Screen](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbech/11lap.PNG)
+![Splash Screen](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/11lap.PNG)
 
 
 
 It's what main screen looks like.
-![Main Window](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbech/1_start.PNG)
+![Main Window](https://raw.githubusercontent.com/longdavid2k17/workbench/master/screens_Workbench/1_start.PNG)
 How you can see, controlling this software is easy and simple. Most used function are in the most common places (like File Menu).
 Just open file and start writting like Sheakspere
 ![OpenFile DIalog](https://raw.githubusercontent.com/longdavid2k17/opendocs/master/Screenshots/openDialog.PNG)
