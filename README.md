@@ -46,5 +46,5 @@ Software developed by David Kantoch, POLAND
 
 # License
 This project is free to use. I don't get paid for it.
-Link to the download: https://mega.nz/#!bIoznC4D!Z41mdwZE2DNAfK_TcZdHYXFE4uDr6fGwMjEc6kY9JJk
+Link to the download: https://mega.nz/#!fchl3ZhD!PHnaWzBadim6032-QslFZD-PpAQQp__hpxNzyv2pmTk
 
